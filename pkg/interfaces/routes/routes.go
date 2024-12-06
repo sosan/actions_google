@@ -54,6 +54,7 @@ func Register(app *gin.Engine, dependencies *dimodel.Dependencies) {
 
 		actions := api.Group("/actions")
 		{
+			actions.GET("/google", dependencies.ActionsController.Ping)
 			actions.POST("/google/sheets", middlewares.ValidateGetGoogleSheet(), dependencies.ActionsController.GetGoogleSheetByID)
 		}
 	}
