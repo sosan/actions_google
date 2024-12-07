@@ -39,6 +39,7 @@ func GetAllEnvsFromRedis() string {
 	}
 
 	envsStr, err := getEnvsFromRedis(ctx, redisClient, vaultKeyFrontendEnvs)
+	log.Printf("ENVS=%s", envsStr)
 	if err != nil {
 		log.Panicf("ERROR | Cannot load VAULT_KEY_FRONTEND_ENVS %v", err)
 	}
