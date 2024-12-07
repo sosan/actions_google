@@ -1,10 +1,9 @@
 package middlewares
 
 import (
-	// "actions_google/pkg/domain/models"
+	"actions_google/pkg/domain/models"
 	"log"
-	// "net/http"
-
+	"net/http"
 	"github.com/gin-gonic/gin"
 )
 
@@ -53,13 +52,13 @@ func ValidateGetGoogleSheet() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		body := ctx.Request.Body
 		log.Printf("body: %s", body)
-		// var currentReq models.RequestGoogleAction
-		// if err := ctx.ShouldBindBodyWithJSON(&currentReq); err != nil {
-		// 	ctx.JSON(http.StatusBadRequest, NewInvalidRequestError(models.InvalidJSON, http.StatusBadRequest))
-		// 	ctx.Abort()
-		// 	return
-		// }
-		// ctx.Set(models.ActionGoogleKey, currentReq)
+		var currentReq models.RequestGoogleAction
+		if err := ctx.ShouldBindBodyWithJSON(&currentReq); err != nil {
+			ctx.JSON(http.StatusBadRequest, NewInvalidRequestError(models.InvalidJSON, http.StatusBadRequest))
+			ctx.Abort()
+			return
+		}
+		ctx.Set(models.ActionGoogleKey, currentReq)
 		ctx.Next()
 	}
 }

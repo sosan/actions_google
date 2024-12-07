@@ -1,0 +1,96 @@
+{
+    "$id": "http://example.com/myURI.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false,
+    "description": "Schema for actions data",
+    "properties": {
+        "actions": {
+            "description": "Encapsulates all action-related data",
+            "properties": {
+                "actionid": {
+                    "type": "string"
+                },
+                "createdat": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "credentialid": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "error_message": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "namedocument": {
+                    "type": "string"
+                },
+                "nodeid": {
+                    "type": "string"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "pollmode": {
+                    "type": "string"
+                },
+                "redirecturl": {
+                    "type": "string"
+                },
+                "requestid": {
+                    "type": "string"
+                },
+                "resourceid": {
+                    "type": "string"
+                },
+                "selectdocument": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "sub": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "workflowid": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "actionid",
+                "requestid",
+                "pollmode",
+                "selectdocument",
+                "document",
+                "namedocument",
+                "resourceid",
+                "operation",
+                "data",
+                "credentialid",
+                "sub",
+                "type",
+                "workflowid",
+                "nodeid",
+                "redirecturl",
+                "status",
+                "createdat"
+            ],
+            "type": "object"
+        }
+    },
+    "required": [
+        "actions"
+    ],
+    "title": "ActionsRecord",
+    "type": "object"
+}

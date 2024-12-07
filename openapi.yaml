@@ -3,6 +3,9 @@ info:
   title: Actions Google API
   description: API for managing Google actions
   version: 1.0.0
+servers:
+  - url: https://actions-google.vercel.app
+    description: Production server
 paths:
   /api/actions/google/sheets:
     post:
