@@ -52,7 +52,7 @@ func ValidateGetGoogleSheet() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		body := ctx.Request.Body
 		log.Printf("body: %s", body)
-		var currentReq models.RequestGoogleAction
+		var currentReq models.ActionsCommand
 		if err := ctx.ShouldBindBodyWithJSON(&currentReq); err != nil {
 			ctx.JSON(http.StatusBadRequest, NewInvalidRequestError(models.InvalidJSON, http.StatusBadRequest))
 			ctx.Abort()

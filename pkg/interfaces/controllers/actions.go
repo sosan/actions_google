@@ -25,7 +25,7 @@ func (a *ActionsController) Ping(ctx *gin.Context) {
 }
 
 func (a *ActionsController) GetGoogleSheetByID(ctx *gin.Context) {
-	newAction := ctx.MustGet(models.ActionGoogleKey).(models.RequestGoogleAction)
+	newAction := ctx.MustGet(models.ActionGoogleKey).(models.ActionsCommand)
 	log.Printf("%v", newAction)
 	// created, exist, actionsData := a.actionsService.GetGoogleSheetByID(newAction.Actions)
 	// if !created && !exist {
