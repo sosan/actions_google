@@ -2,7 +2,10 @@ package httpclient
 
 import (
 	"actions_google/pkg/config"
-	"actions_google/pkg/domain/models"
+	"context"
+	"net/http"
+
+	"golang.org/x/oauth2"
 )
 
 type ActionsHTTPRepository struct {
@@ -19,6 +22,7 @@ func NewActionsClientHTTP(client HTTPClient, clickhouseConfig config.ClickhouseC
 	}
 }
 
-func (a *ActionsHTTPRepository) GetGoogleSheetByID(_ models.RequestGoogleAction) string {
-	return ""
+func (a *ActionsHTTPRepository) GetOAuthHTTPClient(ctx *context.Context, config *oauth2.Config, token *oauth2.Token) *http.Client {
+	client := config.Client(*ctx, token)
+	return client
 }

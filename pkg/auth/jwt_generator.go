@@ -46,7 +46,7 @@ func NewJWTGenerator(config JWTGeneratorConfig) *JWTGenerator {
 	}
 }
 
-func (j *JWTGenerator) GenerateServiceUserAssertionJWT(timeExpire time.Duration) (string, error) {
+func (j *JWTGenerator) GenerateActionUserAssertionJWT(timeExpire time.Duration) (string, error) {
 	now := time.Now().UTC()
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
 		"iss": j.ServiceUser.UserID,

@@ -3,8 +3,7 @@ package controllers
 import (
 	"actions_google/pkg/domain/models"
 	"actions_google/pkg/domain/repos"
-	"log"
-	// "net/http"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,27 +25,20 @@ func (a *ActionsController) Ping(ctx *gin.Context) {
 
 func (a *ActionsController) GetGoogleSheetByID(ctx *gin.Context) {
 	newAction := ctx.MustGet(models.ActionGoogleKey).(models.ActionsCommand)
-	log.Printf("%v", newAction)
-	// created, exist, actionsData := a.actionsService.GetGoogleSheetByID(newAction.Actions)
-	// if !created && !exist {
-	// 	ctx.JSON(http.StatusInternalServerError, gin.H{
-	// 		"error":  "not generated",
-	// 		"status": http.StatusInternalServerError,
-	// 	})
-	// 	return
-	// }
+	data := a.actionsService.GetGoogleSheetByID(newAction.Actions)
+	// data not used
+	// there is an bool option devtest can be used to response directly
+	if string(*data) == "" {
+		ctx.JSON(http.StatusInternalServerError, models.ResponseGetGoogleSheetByID{
+			Error:  "not generated",
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
 
-	// if exist {
-	// 	ctx.JSON(http.StatusAlreadyReported, gin.H{
-	// 		"error":  "asdasdadasd",
-	// 		"status": http.StatusAlreadyReported,
-	// 	})
-	// 	return
-	// }
-
-	// ctx.JSON(http.StatusCreated, models.ResponseGetGoogleSheetByID{
-	// 	Status: http.StatusOK,
-	// 	Error:  "",
-	// 	Action: *actionsData,
-	// })
+	ctx.JSON(http.StatusCreated, models.ResponseGetGoogleSheetByID{
+		Status: http.StatusOK,
+		Error:  "",
+		// Data:   newAction.Actions.ActionID, //not necesary
+	})
 }

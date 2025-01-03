@@ -65,7 +65,7 @@ func Dummy() {
 }
 
 func RunWebserver() {
-	addr := config.GetEnv("BACKEND_ADDR", ":4020")
+	addr := config.GetEnv("ACTIONS_ADDR", ":4040")
 	err := app.Run(addr)
 	if err != nil {
 		log.Panicf("ERROR | Starting gin failed, %v", err)

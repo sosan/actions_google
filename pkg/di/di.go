@@ -3,6 +3,7 @@ package di
 import (
 	"actions_google/pkg/config"
 	"actions_google/pkg/dimodel"
+	"actions_google/pkg/domain/models"
 	"actions_google/pkg/domain/services"
 	"actions_google/pkg/infra/brokerclient"
 	"actions_google/pkg/infra/httpclient"
@@ -20,59 +21,23 @@ func InitDependencies() *dimodel.Dependencies {
 	authService := authContext.GetAuthService()
 	authController := authContext.GetAuthController()
 
-	// userRedisClient := redisclient.NewRedisClient()
-	// userHTTPClient := &httpclient.ClientImpl{}
-	// userBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
+	credentialBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
+	repoCredentialBroker := brokerclient.NewCredentialKafkaRepository(credentialBrokerClient)
 
-	// repoUserRedis := redisclient.NewUserRedisRepository(userRedisClient)
-	// repoUserHTTP := httpclient.NewUserClientHTTP(userHTTPClient)
-	// repoUserBroker := brokerclient.NewUserKafkaRepository(userBrokerClient)
-
-	// userService := services.NewUserService(repoUserHTTP, repoUserRedis, repoUserBroker)
-	// userController := controllers.NewUserController(userService)
-
-	// credentialHTTPClient := &httpclient.ClientImpl{}
-	// credentialRedisClient := redisclient.NewRedisClient()
-	// credentialBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
-	// redisCredentialRepo := redisclient.NewCredentialRedisRepository(credentialRedisClient)
-	// googleCredentialRepo := httpclient.NewGoogleCredentialRepository(credentialHTTPClient)   // same client
-	// facebookCredentialRepo := httpclient.NewGoogleCredentialRepository(credentialHTTPClient) // same client
-	// repoCredentialBroker := brokerclient.NewCredentialKafkaRepository(credentialBrokerClient)
-	// repoCredentialHTTP := httpclient.NewCredentialRepository(credentialHTTPClient, clickhouseConfig)
-	// credentialService := services.NewCredentialService(googleCredentialRepo, facebookCredentialRepo, redisCredentialRepo, repoCredentialBroker, repoCredentialHTTP)
-	// credentialController := controllers.NewCredentialController(credentialService, authService)
-
-	// workflowHTTPClient := &httpclient.ClientImpl{}
-	// repoWorkflowHTTP := httpclient.NewWorkflowClientHTTP(workflowHTTPClient, clickhouseConfig)
-	// workflowRedisClient := redisclient.NewRedisClient()
-	// workflowBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
-	// repoWorkflowRedis := redisclient.NewWorkflowRepository(workflowRedisClient)
-	// repoWorkflowBroker := brokerclient.NewWorkflowKafkaRepository(workflowBrokerClient)
-	// idService := services.NewUUIDService()
-	// workflowService := services.NewWorkflowService(repoWorkflowRedis, repoWorkflowBroker, idService, repoWorkflowHTTP)
-	// workflowController := controllers.NewWorkflowController(workflowService, credentialService, authService)
-
-	// dashboardHTTPClient := &httpclient.ClientImpl{}
-	// dashboardRepo := httpclient.NewDashboardRepository(dashboardHTTPClient, clickhouseConfig)
-	// dashboardService := services.NewDashboardService(dashboardRepo)
-	// dashboardController := controllers.NewDashboardController(dashboardService, authService)
-
-	actionsHTTPClient := &httpclient.ClientImpl{}
+	actionsHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)
+	credentialHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)	
+	repoCredentialHTTP := httpclient.NewCredentialRepository(credentialHTTPClient, clickhouseConfig)
 	actionsRedisClient := redisclient.NewRedisClient()
 	actionsBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
 	repoActionsRedis := redisclient.NewActionsRepository(actionsRedisClient)
 	repoActionsBroker := brokerclient.NewActionsKafkaRepository(actionsBrokerClient)
 	actionsRepo := httpclient.NewActionsClientHTTP(actionsHTTPClient, clickhouseConfig)
-	actionsService := services.NewActionsService(repoActionsRedis, repoActionsBroker, actionsRepo)
+	actionsService := services.NewActionsService(repoActionsRedis, repoActionsBroker, actionsRepo, repoCredentialHTTP, repoCredentialBroker)
 	actionsController := controllers.NewActionsController(actionsService)
 
 	return &dimodel.Dependencies{
-		// WorkflowController:   workflowController,
 		AuthService:          &authService,
-		// UserController:       userController,
-		// DashboardController:  dashboardController,
 		AuthController:       authController,
-		// CredentialController: credentialController,
 		ActionsController:    actionsController,
 	}
 }

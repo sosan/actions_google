@@ -2,26 +2,30 @@ package repos
 
 import (
 	"actions_google/pkg/domain/models"
+	"context"
+	"net/http"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 type ActionsService interface {
-	GetGoogleSheetByID(newAction models.RequestGoogleAction) (created bool, exist bool, workflow *models.ActionData)
+	GetGoogleSheetByID(newAction *models.RequestGoogleAction) (data *[]byte)
 }
 
 type ActionsHTTPRepository interface {
-	GetGoogleSheetByID(newAction models.RequestGoogleAction) string
+	GetOAuthHTTPClient(ctx *context.Context, config *oauth2.Config, token *oauth2.Token) *http.Client
 }
 
 type ActionsRedisRepoInterface interface {
-	// Create(newAction *models.RequestGoogleAction) (created bool, exist bool, err error)
-	// Remove(newAction *models.RequestGoogleAction) (removed bool)
 	ValidateActionGlobalUUID(field *string) (bool, error)
-	// AcquireLock(key, value string, expiration time.Duration) (locked bool, err error)
-	// RemoveLock(key string) bool
 	SetNX(hashKey, actionID string, expiration time.Duration) (bool, error)
 }
 
 type ActionsBrokerRepository interface {
-	Create(newAction *models.RequestGoogleAction) bool
+	SendAction(newAction *models.RequestGoogleAction) bool
+}
+
+type CredentialBrokerRepository interface {
+	UpdateCredential(exchangeCredential *models.RequestExchangeCredential) bool
 }
