@@ -25,7 +25,7 @@ type ZitadelClient struct {
 func NewZitadelClient(apiURL, userID, privateKey, keyID, projectID, clientID string) *ZitadelClient {
 	return &ZitadelClient{
 		apiURL:     apiURL,
-		ClientHTTP: &ClientImpl{}, // &http.Client{Timeout: 10 * time.Second},
+		ClientHTTP: NewClientImpl(models.TimeoutRequest), //&ClientImpl{}, // &http.Client{Timeout: 10 * time.Second},
 		userID:     userID,
 		privateKey: []byte(privateKey),
 		keyID:      keyID,
@@ -38,7 +38,7 @@ func (z *ZitadelClient) SetHTTPClient(client HTTPClient) {
 	z.ClientHTTP = client
 }
 
-func (z *ZitadelClient) GenerateServiceUserAccessToken(jwt string) (*string, time.Duration, error) {
+func (z *ZitadelClient) GenerateActionUserAccessToken(jwt string) (*string, time.Duration, error) {
 	if jwt == "" {
 		return nil, models.OneDay, fmt.Errorf("ERROR | token empty")
 	}
@@ -97,8 +97,8 @@ func (z *ZitadelClient) ValidateUserToken(userToken, jwtToken string) (bool, int
 	return *result.Active, *result.Exp, nil
 }
 
-func (z *ZitadelClient) ValidateServiceUserAccessToken(serviceUserToken, jwtToken *string) (bool, error) {
-	data := fmt.Sprintf("client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer&client_assertion=%s&token=%s", *jwtToken, *serviceUserToken)
+func (z *ZitadelClient) ValidateActionUserAccessToken(actionUserToken, jwtToken *string) (bool, error) {
+	data := fmt.Sprintf("client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer&client_assertion=%s&token=%s", *jwtToken, *actionUserToken)
 	req, err := http.NewRequest("POST", z.apiURL+"/oauth/v2/introspect", strings.NewReader(data))
 	if err != nil {
 		return false, fmt.Errorf("ERROR | cannot create HTTP newRequest: %v", err)

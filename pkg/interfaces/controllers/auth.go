@@ -61,14 +61,14 @@ func (ac *AuthController) GetAuthController() *AuthController {
 		authService := services.NewAuthService(jwtGenerator, zitadelClient, tokenRepo)
 
 		// get cached accestoken for service user
-		cachedToken := authService.GetCachedServiceUserAccessToken()
+		cachedToken := authService.GetCachedActionUserAccessToken()
 		// in dev state, not rotating service user acces token in servesless functions
 		if ac.config.GetEnv("ROTATE_SERVICE_USER_TOKEN", "n") == "y" {
 			if cachedToken == nil {
 				// Rotate token if it's expired or not found
 				_, err := authService.GenerateAccessToken()
 				if err != nil { // error saving retry read
-					_ = authService.GetCachedServiceUserAccessToken()
+					_ = authService.GetCachedActionUserAccessToken()
 				}
 			}
 		}

@@ -24,12 +24,12 @@ func NewAuthService(jwtGenerator repos.JWTGenerator, zitadelClient repos.Zitadel
 }
 
 func (s *AuthServiceImpl) GenerateAccessToken() (*string, error) {
-	assertionJWT, err := s.jwtGenerator.GenerateServiceUserAssertionJWT(time.Hour)
+	assertionJWT, err := s.jwtGenerator.GenerateActionUserAssertionJWT(time.Hour)
 	if err != nil {
 		log.Panicf("ERROR | Cannot generate JWT %v", err)
 	}
 
-	accessToken, expiresIn, err := s.zitadelClient.GenerateServiceUserAccessToken(assertionJWT)
+	accessToken, expiresIn, err := s.zitadelClient.GenerateActionUserAccessToken(assertionJWT)
 	if err != nil {
 		log.Printf("ERROR | Cannot acces to ACCESS token %v", err)
 		return nil, fmt.Errorf("ERROR | Cannot acces to ACCESS token %v", err)
@@ -44,18 +44,18 @@ func (s *AuthServiceImpl) GenerateAccessToken() (*string, error) {
 	return accessToken, nil
 }
 
-func (s *AuthServiceImpl) GetCachedServiceUserAccessToken() *string {
+func (s *AuthServiceImpl) GetCachedActionUserAccessToken() *string {
 	existingToken, err := s.tokenRepo.GetToken()
 	if err != nil && (err.Error() == "token expired" || err.Error() == "no token found in redis") {
 		return nil
 	}
-
+	
 	if existingToken == nil {
 		return nil
 	}
 	if config.GetEnv("ROTATE_SERVICE_USER_TOKEN", "n") == "y" {
 		// to verify
-		isValid, err := s.verifyOnlineServiceUserToken(existingToken.AccessToken)
+		isValid, err := s.verifyOnlineActionUserToken(existingToken.AccessToken)
 		if !isValid || err != nil {
 			token, _ := s.GenerateAccessToken()
 			return token
@@ -64,8 +64,8 @@ func (s *AuthServiceImpl) GetCachedServiceUserAccessToken() *string {
 	return existingToken.AccessToken
 }
 
-func (s *AuthServiceImpl) verifyCachedServiceUserToken(token *string) (isOk bool, err error) {
-	cachedAccesToken := s.GetCachedServiceUserAccessToken()
+func (s *AuthServiceImpl) verifyCachedActionUserToken(token *string) (isOk bool, err error) {
+	cachedAccesToken := s.GetCachedActionUserAccessToken()
 	if config.GetEnv("ROTATE_SERVICE_USER_TOKEN", "n") == "y" {
 		if cachedAccesToken == nil {
 			cachedAccesToken, err = s.GenerateAccessToken()
@@ -79,15 +79,15 @@ func (s *AuthServiceImpl) verifyCachedServiceUserToken(token *string) (isOk bool
 	if *cachedAccesToken == *token {
 		return true, nil
 	}
-	return false, fmt.Errorf("ERROR | AccessToken cannot be empty")
+	return false, fmt.Errorf("ERROR | invalid user token")
 }
 
-func (s *AuthServiceImpl) verifyOnlineServiceUserToken(token *string) (isValid bool, err error) {
+func (s *AuthServiceImpl) verifyOnlineActionUserToken(token *string) (isValid bool, err error) {
 	assertionJWT, err := s.jwtGenerator.GenerateAppInstrospectJWT(time.Hour)
 	if err != nil {
 		log.Panicf("ERROR | Cannot generate JWT %v", err)
 	} // not validate needs to generate
-	isValid, err = s.zitadelClient.ValidateServiceUserAccessToken(token, &assertionJWT)
+	isValid, err = s.zitadelClient.ValidateActionUserAccessToken(token, &assertionJWT)
 	if err != nil {
 		log.Printf("ERROR | Cannot get UserToken %s error: %v", *token, err)
 		return false, err
@@ -95,17 +95,17 @@ func (s *AuthServiceImpl) verifyOnlineServiceUserToken(token *string) (isValid b
 	return isValid, err
 }
 
-func (s *AuthServiceImpl) VerifyServiceUserToken(token string) (isOk bool, err error) {
+func (s *AuthServiceImpl) VerifyActionUserToken(token string) (isOk bool, err error) {
 	if token == "" {
 		return false, fmt.Errorf("ERROR | AccessToken cannot be empty")
 	}
 
-	isOk, err = s.verifyCachedServiceUserToken(&token)
+	isOk, err = s.verifyCachedActionUserToken(&token)
 	if err == nil && isOk {
 		return isOk, err
 	}
 
-	isOk, err = s.verifyOnlineServiceUserToken(&token)
+	isOk, err = s.verifyOnlineActionUserToken(&token)
 	return isOk, err
 }
 

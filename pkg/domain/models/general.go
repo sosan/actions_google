@@ -15,6 +15,7 @@ const (
 	MaxTimeoutContext     = 60 * time.Second
 	TimeDriftForExpire    = 600 // 10 minutes
 	MaxTimeForLocks       = 30 * time.Second
+	TimeoutRequest        = 5 * time.Minute
 )
 
 const (
@@ -22,3 +23,13 @@ const (
 	CredentialExchangeContextKey = "exchangecredential"
 	ActionGoogleKey              = "actiongoogle"
 )
+
+var ValidCommandTypes = map[string]bool{
+	"create": true,
+	"update": true,
+	"delete": true,
+}
+
+var ValidGoogleActionsTypes = map[string]bool{
+	"googlesheets": true,
+}

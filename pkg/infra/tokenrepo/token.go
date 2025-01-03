@@ -29,7 +29,7 @@ type TokenRepository struct {
 func NewTokenRepository(redisClient *redisclient.RedisClient) *TokenRepository {
 	return &TokenRepository{
 		redisClient: redisClient,
-		key:         "serviceuser:token",
+		key:         "serviceuser_action:token",
 	}
 }
 

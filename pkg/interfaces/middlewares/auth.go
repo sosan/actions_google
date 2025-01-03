@@ -45,7 +45,7 @@ func AuthMiddleware(authService *repos.AuthService) gin.HandlerFunc {
 }
 
 func verifyServiceUserToken(authService repos.AuthService, token string) (bool, error) {
-	isValid, err := authService.VerifyServiceUserToken(token)
+	isValid, err := authService.VerifyActionUserToken(token)
 	if err != nil {
 		return false, err
 	}
