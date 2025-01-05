@@ -35,10 +35,12 @@ func (a *ActionsController) GetGoogleSheetByID(ctx *gin.Context) {
 		})
 		return
 	}
-
+	// in newaction struct, there is TestMode with true/false
+	// if testMode=true data can be returned ???
+	// currently user performs polling to retrieve data
 	ctx.JSON(http.StatusCreated, models.ResponseGetGoogleSheetByID{
 		Status: http.StatusOK,
 		Error:  "",
-		// Data:   newAction.Actions.ActionID, //not necesary
+		// Data:   newAction.Actions.ActionID, //not necessary
 	})
 }

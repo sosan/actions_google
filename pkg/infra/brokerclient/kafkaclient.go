@@ -1,8 +1,8 @@
 package brokerclient
 
 import (
-	"log"
 	"actions_google/pkg/config"
+	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )

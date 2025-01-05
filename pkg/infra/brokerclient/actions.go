@@ -1,10 +1,10 @@
 package brokerclient
 
 import (
-	"encoding/json"
-	"log"
 	"actions_google/pkg/common"
 	"actions_google/pkg/domain/models"
+	"encoding/json"
+	"log"
 	"time"
 )
 
@@ -16,13 +16,13 @@ const (
 	CommandTypeCreate = "create"
 	CommandTypeUpdate = "update"
 	CommandTypeDelete = "delete"
-	TopicName = "actions.command"
+	TopicName         = "actions.command"
 )
 
 type ActionsCommand struct {
 	Actions   *models.RequestGoogleAction `json:"actions"`
-	Type      string                     `json:"type,omitempty"`
-	Timestamp time.Time                  `json:"timestamp,omitempty"`
+	Type      string                      `json:"type,omitempty"`
+	Timestamp time.Time                   `json:"timestamp,omitempty"`
 }
 
 func NewActionsKafkaRepository(client KafkaClient) *ActionsKafkaRepository {
@@ -33,7 +33,7 @@ func NewActionsKafkaRepository(client KafkaClient) *ActionsKafkaRepository {
 
 func (a *ActionsKafkaRepository) SendAction(newAction *models.RequestGoogleAction) (sended bool) {
 	command := ActionsCommand{
-		Actions: newAction,
+		Actions:   newAction,
 		Type:      CommandTypeUpdate,
 		Timestamp: time.Now(),
 	}

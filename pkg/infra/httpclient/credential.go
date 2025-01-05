@@ -1,12 +1,12 @@
 package httpclient
 
 import (
+	"actions_google/pkg/config"
+	"actions_google/pkg/domain/models"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
-	"actions_google/pkg/config"
-	"actions_google/pkg/domain/models"
 	"net/http"
 	"net/url"
 )

@@ -25,11 +25,10 @@ type RequestGoogleAction struct {
 	Type           string `json:"type" binding:"required,oneof=googlesheets"`
 	WorkflowID     string `json:"workflowid" binding:"required,uuid"`
 	NodeID         string `json:"nodeid" binding:"required,max=255"`
-	RedirectURL    string `json:"redirecturl" binding:"required,url"`
+	RedirectURL    string `json:"redirecturl" binding:"required"`
 	Status         string `json:"status" binding:"omitempty,oneof=pending success failed"`
 	CreatedAt      string `json:"createdat" binding:"required,datetime=2006-01-02T15:04:05Z"`
 	Testmode       bool   `json:"testmode"`
-	// ErrorMessage   *string `json:"error_message" binding:"omitempty,max=512"`
 }
 
 type ResponseGetGoogleSheetByID struct {

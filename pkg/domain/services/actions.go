@@ -17,11 +17,11 @@ type ActionsServiceImpl struct {
 
 func NewActionsService(repoRedis repos.ActionsRedisRepoInterface, actionBroker repos.ActionsBrokerRepository, repoHTTP repos.ActionsHTTPRepository, credentialRepo repos.CredentialHTTPRepository, credentialBroker repos.CredentialBrokerRepository) repos.ActionsService {
 	return &ActionsServiceImpl{
-		redisRepo:         repoRedis,
-		brokerActionsRepo: actionBroker,
+		redisRepo:             repoRedis,
+		brokerActionsRepo:     actionBroker,
 		brokerCredentialsRepo: credentialBroker,
-		httpRepo:          repoHTTP,
-		credentialHTTP:    credentialRepo,
+		httpRepo:              repoHTTP,
+		credentialHTTP:        credentialRepo,
 	}
 }
 
@@ -37,7 +37,7 @@ func (a *ActionsServiceImpl) GetGoogleSheetByID(newAction *models.RequestGoogleA
 	default:
 		return nil
 	}
-	
+
 	if data == nil || string(*data) == "" {
 		return nil
 	}

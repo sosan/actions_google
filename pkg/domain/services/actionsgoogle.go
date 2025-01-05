@@ -54,7 +54,7 @@ func (a *ActionsServiceImpl) getAllContentFromGoogleSheets(newAction *models.Req
 	if !updated {
 		// TODO: retries
 		// TODO: dead letter
-		log.Printf("updated %v", updated )
+		log.Printf("updated %v", updated)
 	}
 	// ---
 	// log.Printf("%v", values)

@@ -25,7 +25,7 @@ func InitDependencies() *dimodel.Dependencies {
 	repoCredentialBroker := brokerclient.NewCredentialKafkaRepository(credentialBrokerClient)
 
 	actionsHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)
-	credentialHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)	
+	credentialHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)
 	repoCredentialHTTP := httpclient.NewCredentialRepository(credentialHTTPClient, clickhouseConfig)
 	actionsRedisClient := redisclient.NewRedisClient()
 	actionsBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
@@ -36,8 +36,8 @@ func InitDependencies() *dimodel.Dependencies {
 	actionsController := controllers.NewActionsController(actionsService)
 
 	return &dimodel.Dependencies{
-		AuthService:          &authService,
-		AuthController:       authController,
-		ActionsController:    actionsController,
+		AuthService:       &authService,
+		AuthController:    authController,
+		ActionsController: actionsController,
 	}
 }

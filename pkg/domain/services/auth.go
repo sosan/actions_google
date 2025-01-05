@@ -1,11 +1,11 @@
 package services
 
 import (
-	"fmt"
-	"log"
 	"actions_google/pkg/config"
 	"actions_google/pkg/domain/models"
 	"actions_google/pkg/domain/repos"
+	"fmt"
+	"log"
 	"time"
 )
 
@@ -49,7 +49,7 @@ func (s *AuthServiceImpl) GetCachedActionUserAccessToken() *string {
 	if err != nil && (err.Error() == "token expired" || err.Error() == "no token found in redis") {
 		return nil
 	}
-	
+
 	if existingToken == nil {
 		return nil
 	}

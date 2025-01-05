@@ -29,5 +29,3 @@ func ErrRouter(ctx *gin.Context) {
 		"error": "Page not found",
 	})
 }
-
-

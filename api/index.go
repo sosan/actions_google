@@ -1,13 +1,13 @@
 package api
 
 import (
-	"context"
-	"log"
 	"actions_google/pkg/config"
 	"actions_google/pkg/di"
 	"actions_google/pkg/honeycomb"
 	"actions_google/pkg/interfaces/middlewares"
 	"actions_google/pkg/interfaces/routes"
+	"context"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
