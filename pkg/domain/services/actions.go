@@ -3,8 +3,6 @@ package services
 import (
 	"actions_google/pkg/domain/models"
 	"actions_google/pkg/domain/repos"
-	"fmt"
-	"log"
 )
 
 type ActionsServiceImpl struct {
@@ -29,19 +27,16 @@ func (a *ActionsServiceImpl) GetGoogleSheetByID(newAction *models.RequestGoogleA
 	if newAction == nil {
 		return nil
 	}
-
-	// var data *[]byte
+	// retries???
 	switch newAction.Operation {
 	case "getallcontent":
 		data = a.getAllContentFromGoogleSheets(newAction)
 	default:
 		return nil
 	}
-
 	if data == nil || string(*data) == "" {
 		return nil
 	}
-	log.Printf("%s", fmt.Sprintf("%v", string(*data)))
 	newAction.Data = string(*data)
 	a.brokerActionsRepo.SendAction(newAction)
 	return data

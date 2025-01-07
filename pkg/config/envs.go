@@ -2,7 +2,7 @@ package config
 
 import (
 	"actions_google/pkg/vaults"
-	"log"
+	// "log"
 	"os"
 	"path/filepath"
 
@@ -11,12 +11,13 @@ import (
 
 func LoadEnvs(baseDir string) {
 	if err := loadCurrentEnv(); err != nil {
-		log.Printf("WARNING | Cannot read current .env: %v", err)
-		if err := loadBaseEnv(baseDir, ".env"); err != nil {
-			log.Printf("WARNING | Cannot read base .env: %v", err)
-			if err := loadBaseEnv(baseDir, ".env.local"); err != nil {
-				log.Printf("WARNING | Cannot read local .env.local: %v", err)
-			}
+		// log.Printf("WARNING | Cannot read current .env: %v", err)
+		if err = loadBaseEnv(baseDir, ".env"); err != nil {
+			// log.Printf("WARNING | Cannot read base .env: %v", err)
+			_ = loadBaseEnv(baseDir, ".env.local")
+			// if err := loadBaseEnv(baseDir, ".env.local"); err != nil {
+			// 	// log.Printf("WARNING | Cannot read local .env.local: %v", err)
+			// }
 		}
 	}
 

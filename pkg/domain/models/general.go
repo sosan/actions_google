@@ -33,3 +33,7 @@ var ValidCommandTypes = map[string]bool{
 var ValidGoogleActionsTypes = map[string]bool{
 	"googlesheets": true,
 }
+
+var PermitedPathList = map[string]bool{
+	"/api/actions/ping": true,
+}

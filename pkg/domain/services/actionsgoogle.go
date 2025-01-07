@@ -19,29 +19,36 @@ func (a *ActionsServiceImpl) getAllContentFromGoogleSheets(newAction *models.Req
 	ctx := context.Background()
 	exchangeCredential, err := a.credentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
 	if err != nil {
+		log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
 		return nil
 	}
 	config := a.getConfigOAuth(exchangeCredential.Data)
 	// this new token needs to be updated to DB
 	token := a.generateTokenOAuth(&ctx, config, exchangeCredential)
 	if token == nil {
+		// TODO: deadletter
+		log.Printf("ERROR | Failed to generate OAuth token for user %s workflowid %s nodeid %s actionid %s", newAction.Sub, newAction.WorkflowID, newAction.NodeID, newAction.ActionID)
 		return nil
 	}
 	httpClient := a.getClient(&ctx, config, token)
 	if httpClient == nil {
+		log.Printf("ERROR | Failed to create HTTP client for user %s workflowid %s nodeid %s actionid %s", newAction.Sub, newAction.WorkflowID, newAction.NodeID, newAction.ActionID)
 		return nil
 	}
 	sheetsService, err := sheets.NewService(ctx, option.WithHTTPClient(httpClient))
 	if err != nil {
+		log.Printf("ERROR | not possible to initialize Google Sheets service: %v for user %s workflowid %s nodeid %s actionid %s", err, newAction.Sub, newAction.WorkflowID, newAction.NodeID, newAction.ActionID)
 		return nil
 	}
 	spreadsheetID := a.getSpreedSheetID(&newAction.Document)
 	response, err := sheetsService.Spreadsheets.Get(*spreadsheetID).Context(ctx).Do()
 	if response == nil || err != nil {
+		log.Printf("ERROR | cannot fetch spreadsheetID: %s error: %v for actioid: %s", *spreadsheetID, err, newAction.ActionID)
 		return nil
 	}
 	values, err := a.getValuesFromSheet(response, sheetsService, spreadsheetID)
 	if values == nil || err != nil {
+		log.Printf("ERROR | cannot get values for spreadsheetID: %s error: %v for actioid: %s", *spreadsheetID, err, newAction.ActionID)
 		return nil
 	}
 
@@ -52,14 +59,15 @@ func (a *ActionsServiceImpl) getAllContentFromGoogleSheets(newAction *models.Req
 	// this operation CAN FAIL to save to DB NOT implemented retries and deadletters
 	updated := a.brokerCredentialsRepo.UpdateCredential(exchangeCredential)
 	if !updated {
+		log.Printf("WARN | Failed to update credentials in the database for CredentialID: %s", exchangeCredential.ID)
 		// TODO: retries
 		// TODO: dead letter
-		log.Printf("updated %v", updated)
 	}
 	// ---
 	// log.Printf("%v", values)
 	str, err := values.MarshalJSON()
 	if err != nil {
+		log.Printf("ERROR | marshalling values to JSON: %v for actionid: %s", err, newAction.ActionID)
 		return nil
 	}
 
