@@ -35,7 +35,7 @@ func (a *ActionsKafkaRepository) SendAction(newAction *models.RequestGoogleActio
 	command := ActionsCommand{
 		Actions:   newAction,
 		Type:      CommandTypeUpdate,
-		Timestamp: time.Now(),
+		Timestamp: time.Now().UTC(),
 	}
 	sended = a.PublishCommand(command, newAction.ActionID)
 	return sended
@@ -61,13 +61,3 @@ func (a *ActionsKafkaRepository) PublishCommand(payload ActionsCommand, key stri
 
 	return false
 }
-
-// func (a *ActionsKafkaRepository) UpdateCredential(exchangeCredential *models.RequestExchangeCredential) (sended bool) {
-// 	command := ActionsCommand{
-// 		Actions: exchangeCredential,
-// 		Type:      CommandTypeUpdate,
-// 		// Timestamp: time.Now(),
-// 	}
-// 	sended = a.PublishCommand(command, newAction.ActionID)
-// 	return sended
-// }
