@@ -35,7 +35,7 @@ func (a *ActionsController) GetGoogleSheetByID(ctx *gin.Context) {
 	go func() {
 		// this function can return data btw
 		a.actionsService.GetGoogleSheetByID(newAction.Actions)
-		done <- true // Señal de que la goroutine ha terminado
+		done <- true // goroutine ended
 	}()
 	// in newaction struct, there is TestMode with true/false
 	// if testMode=true data can be returned ???
@@ -47,7 +47,7 @@ func (a *ActionsController) GetGoogleSheetByID(ctx *gin.Context) {
 	})
 	select {
 	case <-done:
-	case <-time.After(9 * time.Second):
+	case <-time.After(models.MaxSecondsGoRoutine):
 		log.Println("WARN | Needs more time than 10 seconds")
 	}
 }

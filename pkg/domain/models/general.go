@@ -16,6 +16,7 @@ const (
 	TimeDriftForExpire    = 600 // 10 minutes
 	MaxTimeForLocks       = 30 * time.Second
 	TimeoutRequest        = 5 * time.Minute
+	MaxSecondsGoRoutine = 9 * time.Second
 )
 
 const (
