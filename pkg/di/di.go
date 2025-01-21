@@ -7,6 +7,7 @@ import (
 	"actions_google/pkg/domain/services"
 	"actions_google/pkg/infra/brokerclient"
 	"actions_google/pkg/infra/httpclient"
+	"actions_google/pkg/infra/notion"
 	"actions_google/pkg/infra/redisclient"
 	"actions_google/pkg/interfaces/controllers"
 )
@@ -26,13 +27,15 @@ func InitDependencies() *dimodel.Dependencies {
 
 	actionsHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)
 	credentialHTTPClient := httpclient.NewClientImpl(models.TimeoutRequest)
+
 	repoCredentialHTTP := httpclient.NewCredentialRepository(credentialHTTPClient, clickhouseConfig)
 	actionsRedisClient := redisclient.NewRedisClient()
 	actionsBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
+	notionRepo := notion.NewActionsClient()
 	repoActionsRedis := redisclient.NewActionsRepository(actionsRedisClient)
 	repoActionsBroker := brokerclient.NewActionsKafkaRepository(actionsBrokerClient)
 	actionsRepo := httpclient.NewActionsClientHTTP(actionsHTTPClient, clickhouseConfig)
-	actionsService := services.NewActionsService(repoActionsRedis, repoActionsBroker, actionsRepo, repoCredentialHTTP, repoCredentialBroker)
+	actionsService := services.NewActionsService(repoActionsRedis, repoActionsBroker, actionsRepo, repoCredentialHTTP, repoCredentialBroker, notionRepo)
 	actionsController := controllers.NewActionsController(actionsService)
 
 	return &dimodel.Dependencies{

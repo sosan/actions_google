@@ -18,6 +18,7 @@ func Register(app *gin.Engine, dependencies *dimodel.Dependencies) {
 		{
 			actions.GET("/ping", dependencies.ActionsController.Ping)
 			actions.POST("/google/sheets", middlewares.ValidateGetGoogleSheet(), dependencies.ActionsController.GetGoogleSheetByID)
+			actions.POST("/notion", middlewares.ValidateNotionFields(), dependencies.ActionsController.GetNotion)
 		}
 	}
 }

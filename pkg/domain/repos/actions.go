@@ -11,10 +11,12 @@ import (
 
 type ActionsService interface {
 	GetGoogleSheetByID(newAction *models.RequestGoogleAction) (data *[]byte)
+	GetNotion(newAction *models.RequestGoogleAction) (data *[]byte)
 }
 
 type ActionsHTTPRepository interface {
 	GetOAuthHTTPClient(ctx *context.Context, config *oauth2.Config, token *oauth2.Token) *http.Client
+	GetDatabaseNotion(databaseID *string, secret *string) (result *models.NotionDatabaseQueryResponse, err error)
 }
 
 type ActionsRedisRepoInterface interface {
@@ -28,4 +30,8 @@ type ActionsBrokerRepository interface {
 
 type CredentialBrokerRepository interface {
 	UpdateCredential(exchangeCredential *models.RequestExchangeCredential) bool
+}
+
+type ActionsNotion interface {
+	ProcessNotionData(results *[]interface{}) (*[]string, *[][]string)
 }

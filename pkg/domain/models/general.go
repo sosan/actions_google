@@ -16,13 +16,14 @@ const (
 	TimeDriftForExpire    = 600 // 10 minutes
 	MaxTimeForLocks       = 30 * time.Second
 	TimeoutRequest        = 5 * time.Minute
-	MaxSecondsGoRoutine = 9 * time.Second
+	MaxSecondsGoRoutine   = 9 * time.Second
 )
 
 const (
 	CredentialCreateContextKey   = "createcredential"
 	CredentialExchangeContextKey = "exchangecredential"
 	ActionGoogleKey              = "actiongoogle"
+	ActionNotionKey              = "actionnotion"
 )
 
 var ValidCommandTypes = map[string]bool{
@@ -31,8 +32,10 @@ var ValidCommandTypes = map[string]bool{
 	"delete": true,
 }
 
-var ValidGoogleActionsTypes = map[string]bool{
+var ValidActionsTypes = map[string]bool{
 	"googlesheets": true,
+	"notionoauth":  true,
+	"notiontoken":  true,
 }
 
 var PermitedPathList = map[string]bool{
