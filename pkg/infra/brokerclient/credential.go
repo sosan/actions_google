@@ -7,6 +7,8 @@ import (
 	"actions_google/pkg/domain/models"
 	"log"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 type CredentialCommand struct {
@@ -25,15 +27,12 @@ func NewCredentialKafkaRepository(client KafkaClient) *CredentialKafkaRepository
 	}
 }
 
-func (c *CredentialKafkaRepository) UpdateCredential(payload *models.RequestExchangeCredential) (sended bool) {
-	// payload := c.credentialToPayload(stateInfo, token, refresh, expire)
-	// if payload == nil {
-	// 	return false
-	// }
+func (c *CredentialKafkaRepository) UpdateCredential(payload *models.RequestExchangeCredential, token *oauth2.Token) (sended bool) {
+	// not necessary returned value btw for more redeability
+	payload = c.UpdateCredentialFromGoogle(payload, token)
 	command := CredentialCommand{
 		Credential: payload,
 	}
-	// key := fmt.Sprintf("credential_%s_%s_%s_%s", stateInfo.Sub, stateInfo.WorkflowID, stateInfo.NodeID, stateInfo.Type)
 	sended = c.PublishCommand(command, payload.ID)
 	return sended
 }
@@ -57,4 +56,16 @@ func (c *CredentialKafkaRepository) PublishCommand(credentialCommand CredentialC
 	}
 
 	return false
+}
+
+// TODO: it can be moved to another position
+// not necessary returned value btw for more redeability
+func (c *CredentialKafkaRepository) UpdateCredentialFromGoogle(exchangeCredential *models.RequestExchangeCredential, token *oauth2.Token) *models.RequestExchangeCredential {
+	exchangeCredential.Data.Token = token.AccessToken
+	exchangeCredential.Data.TokenRefresh = token.RefreshToken
+	exchangeCredential.UpdatedAt.Time = time.Now().UTC()
+
+	// token.expiry already set to 0
+	exchangeCredential.ExpiresAt.Time = token.Expiry.UTC().Add(-models.TimeDriftForExpire * time.Second)
+	return exchangeCredential
 }

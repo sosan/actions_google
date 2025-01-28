@@ -6,22 +6,36 @@ import (
 )
 
 type ActionsServiceImpl struct {
-	redisRepo             repos.ActionsRedisRepoInterface
-	brokerActionsRepo     repos.ActionsBrokerRepository
-	brokerCredentialsRepo repos.CredentialBrokerRepository
-	httpRepo              repos.ActionsHTTPRepository
-	credentialHTTP        repos.CredentialHTTPRepository
-	actionsNotion         repos.ActionsNotion
+	RedisRepo             repos.ActionsRedisRepoInterface
+	BrokerActionsRepo     repos.ActionsBrokerRepository
+	BrokerCredentialsRepo repos.CredentialBrokerRepository
+	HTTPRepo              repos.ActionsHTTPRepository
+	CredentialHTTP        repos.CredentialHTTPRepository
+	ActionsNotion         repos.ActionsNotion
+	TokenAuth             repos.TokenAuth
+	SheetUtils            repos.SheetUtils
 }
 
-func NewActionsService(repoRedis repos.ActionsRedisRepoInterface, actionBroker repos.ActionsBrokerRepository, repoHTTP repos.ActionsHTTPRepository, credentialRepo repos.CredentialHTTPRepository, credentialBroker repos.CredentialBrokerRepository, notionRepo repos.ActionsNotion) repos.ActionsService {
+func NewActionsService(
+	repoRedis repos.ActionsRedisRepoInterface,
+	actionBroker repos.ActionsBrokerRepository,
+	repoHTTP repos.ActionsHTTPRepository,
+	credentialRepo repos.CredentialHTTPRepository,
+	credentialBroker repos.CredentialBrokerRepository,
+	notionRepo repos.ActionsNotion,
+	tokenAuth repos.TokenAuth,
+	sheetUtils repos.SheetUtils,
+
+) repos.ActionsService {
 	return &ActionsServiceImpl{
-		redisRepo:             repoRedis,
-		brokerActionsRepo:     actionBroker,
-		brokerCredentialsRepo: credentialBroker,
-		httpRepo:              repoHTTP,
-		credentialHTTP:        credentialRepo,
-		actionsNotion:         notionRepo,
+		RedisRepo:             repoRedis,
+		BrokerActionsRepo:     actionBroker,
+		BrokerCredentialsRepo: credentialBroker,
+		HTTPRepo:              repoHTTP,
+		CredentialHTTP:        credentialRepo,
+		ActionsNotion:         notionRepo,
+		TokenAuth:             tokenAuth,
+		SheetUtils:            sheetUtils,
 	}
 }
 
@@ -32,7 +46,7 @@ func (a *ActionsServiceImpl) GetGoogleSheetByID(newAction *models.RequestGoogleA
 	// retries???
 	switch newAction.Operation {
 	case "getallcontent":
-		data = a.getAllContentFromGoogleSheets(newAction)
+		data = a.GetAllContentFromGoogleSheets(newAction)
 	default:
 		return nil
 	}
@@ -40,7 +54,7 @@ func (a *ActionsServiceImpl) GetGoogleSheetByID(newAction *models.RequestGoogleA
 		return nil
 	}
 	newAction.Data = string(*data)
-	a.brokerActionsRepo.SendAction(newAction)
+	a.BrokerActionsRepo.SendAction(newAction)
 	return data
 }
 
@@ -59,6 +73,6 @@ func (a *ActionsServiceImpl) GetNotion(newAction *models.RequestGoogleAction) (d
 		return nil
 	}
 	newAction.Data = string(*data)
-	a.brokerActionsRepo.SendAction(newAction)
+	a.BrokerActionsRepo.SendAction(newAction)
 	return data
 }

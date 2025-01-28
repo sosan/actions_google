@@ -19,7 +19,7 @@ func (a *ActionsServiceImpl) getDatabaseContentFromNotion(newAction *models.Requ
 		return nil
 	}
 	databaseID := a.getDatabaseID(newAction.Document)
-	contentDB, err := a.httpRepo.GetDatabaseNotion(databaseID, &exchangeCredential.Data.Token)
+	contentDB, err := a.HTTPRepo.GetDatabaseNotion(databaseID, &exchangeCredential.Data.Token)
 	if err != nil {
 		log.Printf("ERROR | %v", err)
 		return nil
@@ -27,7 +27,7 @@ func (a *ActionsServiceImpl) getDatabaseContentFromNotion(newAction *models.Requ
 	if len(contentDB.Results) == 0 {
 		return nil
 	}
-	headers, arrContent := a.actionsNotion.ProcessNotionData(&contentDB.Results)
+	headers, arrContent := a.ActionsNotion.ProcessNotionData(&contentDB.Results)
 	log.Printf("%v %v", headers, arrContent)
 	data = a.serializeNotionContent(headers, arrContent)
 	return data
@@ -35,7 +35,7 @@ func (a *ActionsServiceImpl) getDatabaseContentFromNotion(newAction *models.Requ
 
 func (a *ActionsServiceImpl) retriesGetCredential(newAction *models.RequestGoogleAction) (*models.RequestExchangeCredential, error) {
 	for i := 1; i < models.MaxAttempts; i++ {
-		exchangeCredential, err := a.credentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
+		exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
 		if err != nil {
 			log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
 			return nil, err

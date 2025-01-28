@@ -1,0 +1,1606 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>common: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">actions_google/pkg/common/random.go (0.0%)</option>
+				
+				<option value="file1">actions_google/pkg/config/clickhouse.go (0.0%)</option>
+				
+				<option value="file2">actions_google/pkg/config/envs.go (0.0%)</option>
+				
+				<option value="file3">actions_google/pkg/config/kafka.go (0.0%)</option>
+				
+				<option value="file4">actions_google/pkg/config/zitadel.go (0.0%)</option>
+				
+				<option value="file5">actions_google/pkg/domain/models/credentials.go (0.0%)</option>
+				
+				<option value="file6">actions_google/pkg/domain/models/customtime.go (0.0%)</option>
+				
+				<option value="file7">actions_google/pkg/domain/models/user.go (0.0%)</option>
+				
+				<option value="file8">actions_google/pkg/domain/services/actions.go (0.0%)</option>
+				
+				<option value="file9">actions_google/pkg/domain/services/actionsgoogle.go (86.7%)</option>
+				
+				<option value="file10">actions_google/pkg/domain/services/actionsnotion.go (0.0%)</option>
+				
+				<option value="file11">actions_google/pkg/domain/services/auth.go (0.0%)</option>
+				
+				<option value="file12">actions_google/pkg/domain/services/oauth.go (0.0%)</option>
+				
+				<option value="file13">actions_google/pkg/domain/services/sheetutils.go (0.0%)</option>
+				
+				<option value="file14">actions_google/pkg/infra/redisclient/actions.go (0.0%)</option>
+				
+				<option value="file15">actions_google/pkg/infra/redisclient/redisclient.go (0.0%)</option>
+				
+				<option value="file16">actions_google/pkg/infra/tokenrepo/token.go (0.0%)</option>
+				
+				<option value="file17">actions_google/pkg/vaults/setup_vaults.go (0.0%)</option>
+				
+				<option value="file18">actions_google/pkg/vaults/vault_redis.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package common
+
+import (
+        "crypto/rand"
+        "math"
+        "math/big"
+        "time"
+)
+
+func RandomDuration(max, min time.Duration, attempt int) time.Duration <span class="cov0" title="0">{
+        baseWait := min * time.Duration(math.Pow(2, float64(attempt)))
+
+        jitterRange := int64(max - min)
+        jitterBig, err := rand.Int(rand.Reader, big.NewInt(jitterRange))
+        if err != nil </span><span class="cov0" title="0">{
+                return baseWait
+        }</span>
+
+        <span class="cov0" title="0">jitter := time.Duration(jitterBig.Int64()) + min
+
+        waitTime := baseWait + jitter
+
+        return waitTime</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package config
+
+type EnvClickhouseConfig struct{}
+
+type ClickhouseConfig interface {
+        GetClickhouseURI() string
+        GetClickhouseToken() string
+        GetEnv(key, fallback string) string
+}
+
+func (e *EnvClickhouseConfig) GetClickhouseURI() string <span class="cov0" title="0">{
+        return GetEnv("CLICKHOUSE_API_URI", "")
+}</span>
+
+func (e *EnvClickhouseConfig) GetClickhouseToken() string <span class="cov0" title="0">{
+        return GetEnv("CLICKHOUSE_TOKEN_PIPES", "")
+}</span>
+
+func (e *EnvClickhouseConfig) GetEnv(key, fallback string) string <span class="cov0" title="0">{
+        return GetEnv(key, fallback)
+}</span>
+
+func NewClickhouseEnvConfig() ClickhouseConfig <span class="cov0" title="0">{
+        return &amp;EnvClickhouseConfig{}
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package config
+
+import (
+        "actions_google/pkg/vaults"
+        // "log"
+        "os"
+        "path/filepath"
+
+        "github.com/joho/godotenv"
+)
+
+func LoadEnvs(baseDir string) <span class="cov0" title="0">{
+        if err := loadCurrentEnv(); err != nil </span><span class="cov0" title="0">{
+                // log.Printf("WARNING | Cannot read current .env: %v", err)
+                if err = loadBaseEnv(baseDir, ".env"); err != nil </span><span class="cov0" title="0">{
+                        // log.Printf("WARNING | Cannot read base .env: %v", err)
+                        _ = loadBaseEnv(baseDir, ".env.local")
+                        // if err := loadBaseEnv(baseDir, ".env.local"); err != nil {
+                        //         // log.Printf("WARNING | Cannot read local .env.local: %v", err)
+                        // }
+                }</span>
+        }
+
+        // Load environment variables from Vault
+        <span class="cov0" title="0">LoadEnvsFromVault()</span>
+}
+
+func loadCurrentEnv() error <span class="cov0" title="0">{
+        return godotenv.Load()
+}</span>
+
+func loadBaseEnv(baseDir string, fileName string) error <span class="cov0" title="0">{
+        envPath := filepath.Join(baseDir, fileName)
+        return loadEnvFile(envPath)
+}</span>
+
+func loadEnvFile(envFilePath string) error <span class="cov0" title="0">{
+        if _, err := os.Stat(envFilePath); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return godotenv.Load(envFilePath)</span>
+}
+
+func LoadEnvsFromVault() <span class="cov0" title="0">{
+        vaults.GetEnvsFromVault()
+}</span>
+
+func GetEnv(key, fallback string) string <span class="cov0" title="0">{
+        if value, exist := os.LookupEnv(key); exist </span><span class="cov0" title="0">{
+                return value
+        }</span>
+        <span class="cov0" title="0">return fallback</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package config
+
+type EnvKafkaConfig struct{}
+
+type KafkaConfig interface {
+        GetServersURI() string
+        GetProtocol() string
+        GetMechanisms() string
+        GetUsername() string
+        GetPassword() string
+        GetTimeout() string
+        GetEnv(key, fallback string) string
+}
+
+func (e *EnvKafkaConfig) GetServersURI() string <span class="cov0" title="0">{
+        return GetEnv("bootstrap.servers", "localhost:9092")
+}</span>
+
+func (e *EnvKafkaConfig) GetProtocol() string <span class="cov0" title="0">{
+        return GetEnv("security.protocol", "SASL_SSL")
+}</span>
+
+func (e *EnvKafkaConfig) GetMechanisms() string <span class="cov0" title="0">{
+        return GetEnv("sasl.mechanisms", "PLAIN")
+}</span>
+
+func (e *EnvKafkaConfig) GetUsername() string <span class="cov0" title="0">{
+        return GetEnv("sasl.username", "")
+}</span>
+
+func (e *EnvKafkaConfig) GetPassword() string <span class="cov0" title="0">{
+        return GetEnv("sasl.password", "")
+}</span>
+
+func (e *EnvKafkaConfig) GetTimeout() string <span class="cov0" title="0">{
+        return GetEnv("session.timeout.ms", "45000")
+}</span>
+
+func (e *EnvKafkaConfig) GetEnv(key, fallback string) string <span class="cov0" title="0">{
+        return GetEnv(key, fallback)
+}</span>
+
+func NewKafkaEnvConfig() KafkaConfig <span class="cov0" title="0">{
+        return &amp;EnvKafkaConfig{}
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package config
+
+type EnvZitadelConfig struct{}
+
+type ZitadelConfig interface {
+        GetZitadelURI() string
+        GetZitadelServiceUserID() string
+        GetZitadelServiceUserKeyPrivate() string
+        GetZitadelServiceUserKeyID() string
+        GetZitadelServiceUserClientID() string
+        GetZitadelBackendID() string
+        GetZitadelBackendKeyPrivate() string
+        GetZitadelBackendKeyID() string
+        GetZitadelKeyClientID() string
+        GetZitadelProjectID() string
+        GetZitadelBackendClientID() string
+        GetEnv(key, fallback string) string
+}
+
+func (e *EnvZitadelConfig) GetZitadelURI() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_URI", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelProjectID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_PROJECTID", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelKeyClientID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_CLIENTID", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelBackendClientID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_CLIENTID", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelServiceUserID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_USERID_SERVICE_ACCOUNT", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelServiceUserKeyPrivate() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_PRIVATE_SERVICE_ACCOUNT", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelServiceUserKeyID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_KEYID_SERVICE_ACCOUNT", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelServiceUserClientID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_CLIENTID_SERVICE_ACCOUNT", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetEnv(key, fallback string) string <span class="cov0" title="0">{
+        return GetEnv(key, fallback)
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelBackendID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_APP_ID_BACKEND", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelBackendKeyPrivate() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_PRIVATE_BACKEND", "")
+}</span>
+
+func (e *EnvZitadelConfig) GetZitadelBackendKeyID() string <span class="cov0" title="0">{
+        return GetEnv("ZITADEL_KEY_KEYID_BACKEND", "")
+}</span>
+
+func NewZitaldelEnvConfig() ZitadelConfig <span class="cov0" title="0">{
+        return &amp;EnvZitadelConfig{}
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package models
+
+import (
+        "encoding/json"
+        "strings"
+        "time"
+)
+
+// maybe repeated data
+const (
+        CredNameRequired          = "Credentials name is required"
+        CredNameInvalid           = "Credentials name must be alphanumeric with max length of 255"
+        CredNameExist             = "Credentials name already exists for this user"
+        CredNameNotExist          = "Credentials name not exists for this user"
+        CredNameCannotGenerate    = "error checking Credential name existence"
+        CredNameNotGenerate       = "cannot create new Credential"
+        CredDirectorySaveRequired = "Directory to save is required"
+        CredDirectoryInvalid      = "Directory to save must be alphanumeric with max length of 255"
+        CredDateInvalid           = "Invalid date"
+        CredRateLimitUpdate       = 10 * time.Second
+        UserTokenExpired          = "token expired"
+)
+
+type RequestExchangeCredential struct {
+        RevokedAt  *CustomTime    `json:"revoked_at,omitempty"`
+        LastUsedAt *CustomTime    `json:"last_used_at,omitempty"`
+        ExpiresAt  *CustomTime    `json:"expires_at,omitempty"`
+        UpdatedAt  *CustomTime    `json:"updated_at,omitempty"`
+        CreatedAt  *CustomTime    `json:"created_at,omitempty"`
+        NodeID     string         `json:"nodeid,omitempty"`
+        Sub        string         `json:"sub,omitempty"`
+        WorkflowID string         `json:"workflowid,omitempty"`
+        ID         string         `json:"id,omitempty" `
+        Type       string         `json:"type,omitempty"`
+        Name       string         `json:"name,omitempty"`
+        Data       DataCredential `json:"data,omitempty"`
+        Version    uint32         `json:"version,omitempty"`
+        IsActive   bool           `json:"is_active,omitempty"`
+}
+
+type RequestCreateCredential struct {
+        ID         string         `json:"id,omitempty"`
+        Sub        string         `json:"sub,omitempty"`
+        Name       string         `json:"name,omitempty" `
+        Type       string         `json:"type,omitempty" `
+        WorkflowID string         `json:"workflowid,omitempty"`
+        NodeID     string         `json:"nodeid,omitempty"`
+        Data       DataCredential `json:"data" binding:"required"`
+        Timestamp  int64          `json:"timestamp,omitempty"`
+}
+
+type DataCredential struct {
+        ID           string   `json:"id,omitempty"`
+        ClientID     string   `json:"clientId"`
+        ClientSecret string   `json:"clientSecret" `
+        RedirectURL  string   `json:"redirectURL" `
+        OAuthURL     string   `json:"oauthurl,omitempty"`
+        State        string   `json:"state,omitempty"`
+        Code         string   `json:"code"`
+        CodeVerifier string   `json:"codeverifier"`
+        Token        string   `json:"token,omitempty"`
+        TokenRefresh string   `json:"tokenrefresh,omitempty"`
+        Scopes       []string `json:"scopes,omitempty"`
+}
+
+type ResponseCreateCredential struct {
+        Data   string `json:"data"`
+        Error  string `json:"error"`
+        Status int    `json:"status"`
+}
+
+type ResponseGetCredential struct {
+        Credentials *[]RequestExchangeCredential `json:"credentials"`
+        Error       string                       `json:"error"`
+        Status      int                          `json:"status"`
+}
+
+type CredentialPayload struct {
+        Data string `json:"data,omitempty"`
+        RequestExchangeCredential
+}
+
+type InfoCredentials struct {
+        Data                   *[]RequestExchangeCredential `json:"data,omitempty"`
+        Rows                   *int64                       `json:"rows,omitempty"`
+        RowsBeforeLimitAtLeast *int64                       `json:"rows_before_limit_at_least,omitempty"`
+        Statistics             *Statistics                  `json:"statistics,omitempty"`
+        Meta                   []Meta                       `json:"meta,omitempty"`
+}
+
+type Meta struct {
+        Name *string `json:"name,omitempty"`
+        Type *string `json:"type,omitempty"`
+}
+
+type Statistics struct {
+        Elapsed   *float64 `json:"elapsed,omitempty"`
+        RowsRead  *int64   `json:"rows_read,omitempty"`
+        BytesRead *int64   `json:"bytes_read,omitempty"`
+}
+
+func (dc *RequestExchangeCredential) UnmarshalJSON(data []byte) error <span class="cov0" title="0">{
+        type Alias RequestExchangeCredential
+        aux := &amp;struct {
+                *Alias
+                Data json.RawMessage `json:"data"`
+        }{
+                Alias: (*Alias)(dc),
+        }
+
+        if err := json.Unmarshal(data, &amp;aux); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">cleanedData := cleanEscapedJSON(string(aux.Data))
+        var dataCredential DataCredential
+        if err := json.Unmarshal([]byte(cleanedData), &amp;dataCredential); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">dc.Data = dataCredential
+
+        return nil</span>
+}
+
+func cleanEscapedJSON(escapedJSON string) string <span class="cov0" title="0">{
+        cleaned := strings.Trim(escapedJSON, "\"")
+        cleaned = strings.ReplaceAll(cleaned, "\\\"", "\"")
+        cleaned = strings.ReplaceAll(cleaned, "\\\\", "\\")
+        return cleaned
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package models
+
+import (
+        "log"
+        "time"
+)
+
+type CustomTime struct {
+        time.Time
+}
+
+func (ct *CustomTime) UnmarshalJSON(b []byte) error <span class="cov0" title="0">{
+        s := string(b)
+        if s == "null" || s == `""` || s == `"0001-01-01T00:00:00Z"` || s == "1970-01-01 00:00:00" || s == "\"1970-01-01 00:00:00\"" </span><span class="cov0" title="0">{
+                *ct = CustomTime{Time: time.Time{}}
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">s = s[1 : len(s)-1]
+        parsedTime, err := time.Parse(time.RFC3339, s)
+        if err != nil </span><span class="cov0" title="0">{
+                parsedTime, err = time.Parse(time.DateTime, s)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Printf("ERROR | Cannot parse time: %v", err)
+                        *ct = CustomTime{Time: time.Time{}}
+                        return nil
+                }</span>
+        }
+
+        <span class="cov0" title="0">ct.Time = parsedTime
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package models
+
+import (
+        "fmt"
+)
+
+// type SyncUserRequest struct {
+//         ID                       string      `json:"id,omitempty"`
+//         AccessToken              string      `json:"access_token" binding:"required,max=1000"`
+//         Sub                      string      `json:"user_id" binding:"required,max=50"`
+//         Status                   UserStatus  `json:"status" binding:"omitempty,oneof=1 2 3 4"`
+//         RoleID                   UserRoleID  `json:"roleId" binding:"omitempty,oneof=1 2 3 4 5 6 7 8 9 10"`
+//         ResetPasswordToken       *string     `json:"resetPasswordToken,omitempty"`
+//         ResetPasswordTokenSentAt *CustomTime `json:"resetPasswordTokenSentAt,omitempty"`
+//         InvitationToken          *string     `json:"invitationToken,omitempty"`
+//         InvitationTokenSentAt    *CustomTime `json:"invitationTokenSentAt,omitempty"`
+//         TrialExpiryDate          *CustomTime `json:"trialExpiryDate,omitempty"`
+//         DeletedAt                *CustomTime `json:"deleted_at,omitempty"`
+//         CreatedAt                *CustomTime `json:"created_at,omitempty"`
+//         UpdatedAt                *CustomTime `json:"updated_at,omitempty"`
+// }
+
+type UserStatus uint8
+type UserRoleID uint8
+
+const (
+        StatusActive  UserStatus = 1
+        StatusInvited UserStatus = 2
+        StatusPending UserStatus = 3
+        StatusBlocked UserStatus = 4
+
+        RoleAdmin     UserRoleID = 1
+        RoleUser      UserRoleID = 2
+        RoleModerator UserRoleID = 3
+        RoleEditor    UserRoleID = 4
+        RoleGuest     UserRoleID = 5
+        RoleCustomer  UserRoleID = 6
+        RoleSupport   UserRoleID = 7
+        RoleManager   UserRoleID = 8
+        RoleAnalyst   UserRoleID = 9
+        RoleDeveloper UserRoleID = 10
+
+        InvalidJSON = "Invalid JSON data"
+
+        UserSubExist           = "Sub already exists"
+        UserSubIsRequired      = "Sub is required"
+        UserNameExist          = "username already exists"
+        UserCannotGenerate     = "error checking Sub existence"
+        UserNameCannotCreate   = "error checking username existence"
+        UsertNameNotGenerate   = "cannot create new user"
+        UserSubInvalid         = "Sub must be a numeric string with max length of 50"
+        UserAccessTokenInvalid = "Access token must be a valid JWT with max length of 1000"
+        UserSubRequired        = "Sub user is required"
+        UserSubMustBe          = "Sub user must greater than 3 characters"
+        UserInvalidStatus      = "Invalid status"
+        UserInvalidRole        = "Invalid role ID"
+        AuthInvalid            = "Authorization header is required"
+)
+
+func (s UserStatus) String() string <span class="cov0" title="0">{
+        switch s </span>{
+        case StatusActive:<span class="cov0" title="0">
+                return "active"</span>
+        case StatusInvited:<span class="cov0" title="0">
+                return "invited"</span>
+        case StatusPending:<span class="cov0" title="0">
+                return "pending"</span>
+        case StatusBlocked:<span class="cov0" title="0">
+                return "blocked"</span>
+        default:<span class="cov0" title="0">
+                return "unknown"</span>
+        }
+}
+
+func UserStatusFromUint8(v uint8) (UserStatus, error) <span class="cov0" title="0">{
+        if v &gt;= 1 &amp;&amp; v &lt;= 4 </span><span class="cov0" title="0">{
+                return UserStatus(v), nil
+        }</span>
+        <span class="cov0" title="0">return 0, fmt.Errorf("invalid user status value: %d", v)</span>
+}
+
+type SyncUserResponse struct {
+        Error   string `json:"error"`
+        Status  int    `json:"status"`
+        Exist   bool   `json:"exist"`
+        Created bool   `json:"created"`
+}
+
+type UnauthorizedError struct {
+        Error  string `json:"error"`
+        Status int    `json:"status"`
+}
+
+type InvalidRequestError struct {
+        Error  string `json:"error"`
+        Status int    `json:"status"`
+}
+
+type UnsupportedMediaTypeError struct {
+        Error  string `json:"error"`
+        Status int    `json:"status"`
+}
+
+type TooManyRequestsError struct {
+        Error  string `json:"error"`
+        Status int    `json:"status"`
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package services
+
+import (
+        "actions_google/pkg/domain/models"
+        "actions_google/pkg/domain/repos"
+)
+
+type ActionsServiceImpl struct {
+        RedisRepo             repos.ActionsRedisRepoInterface
+        BrokerActionsRepo     repos.ActionsBrokerRepository
+        BrokerCredentialsRepo repos.CredentialBrokerRepository
+        HTTPRepo              repos.ActionsHTTPRepository
+        CredentialHTTP        repos.CredentialHTTPRepository
+        ActionsNotion         repos.ActionsNotion
+        TokenAuth             repos.TokenAuth
+        SheetUtils            repos.SheetUtils
+}
+
+func NewActionsService(
+        repoRedis repos.ActionsRedisRepoInterface,
+        actionBroker repos.ActionsBrokerRepository,
+        repoHTTP repos.ActionsHTTPRepository,
+        credentialRepo repos.CredentialHTTPRepository,
+        credentialBroker repos.CredentialBrokerRepository,
+        notionRepo repos.ActionsNotion,
+        tokenAuth repos.TokenAuth,
+        sheetUtils repos.SheetUtils,
+
+) repos.ActionsService <span class="cov0" title="0">{
+        return &amp;ActionsServiceImpl{
+                RedisRepo:             repoRedis,
+                BrokerActionsRepo:     actionBroker,
+                BrokerCredentialsRepo: credentialBroker,
+                HTTPRepo:              repoHTTP,
+                CredentialHTTP:        credentialRepo,
+                ActionsNotion:         notionRepo,
+                TokenAuth:             tokenAuth,
+                SheetUtils:            sheetUtils,
+        }
+}</span>
+
+func (a *ActionsServiceImpl) GetGoogleSheetByID(newAction *models.RequestGoogleAction) (data *[]byte) <span class="cov0" title="0">{
+        if newAction == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        // retries???
+        <span class="cov0" title="0">switch newAction.Operation </span>{
+        case "getallcontent":<span class="cov0" title="0">
+                data = a.GetAllContentFromGoogleSheets(newAction)</span>
+        default:<span class="cov0" title="0">
+                return nil</span>
+        }
+        <span class="cov0" title="0">if data == nil || string(*data) == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">newAction.Data = string(*data)
+        a.BrokerActionsRepo.SendAction(newAction)
+        return data</span>
+}
+
+func (a *ActionsServiceImpl) GetNotion(newAction *models.RequestGoogleAction) (data *[]byte) <span class="cov0" title="0">{
+        if newAction == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        // retries???
+        <span class="cov0" title="0">switch newAction.Operation </span>{
+        case "getallcontent":<span class="cov0" title="0">
+                data = a.getDatabaseContentFromNotion(newAction)</span>
+        default:<span class="cov0" title="0">
+                return nil</span>
+        }
+        <span class="cov0" title="0">if data == nil || string(*data) == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">newAction.Data = string(*data)
+        a.BrokerActionsRepo.SendAction(newAction)
+        return data</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package services
+
+import (
+        "actions_google/pkg/domain/models"
+        "context"
+        "log"
+        "net/http"
+
+        "golang.org/x/oauth2"
+)
+
+func (a *ActionsServiceImpl) GetAllContentFromGoogleSheets(newAction *models.RequestGoogleAction) (data *[]byte) <span class="cov10" title="6">{
+        ctx := context.Background()
+        //TODO: quick check if spreadsheetID is valid
+        exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&amp;newAction.Sub, &amp;newAction.CredentialID, 1)
+        if err != nil </span><span class="cov1" title="1">{
+                log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
+                return nil
+        }</span>
+        <span class="cov9" title="5">config := a.TokenAuth.GetConfigOAuth(exchangeCredential.Data)
+        // this new token needs to be updated to DB
+        token := a.TokenAuth.GenerateTokenOAuth(&amp;ctx, config, exchangeCredential)
+        if token == nil </span><span class="cov1" title="1">{
+                // TODO: deadletter
+                log.Printf("ERROR | Failed to generate OAuth token for user %s workflowid %s nodeid %s actionid %s", newAction.Sub, newAction.WorkflowID, newAction.NodeID, newAction.ActionID)
+                return nil
+        }</span>
+        <span class="cov7" title="4">httpClient := a.getClient(&amp;ctx, config, token)
+        if httpClient == nil </span><span class="cov1" title="1">{
+                log.Printf("ERROR | Failed to create HTTP client for user %s workflowid %s nodeid %s actionid %s", newAction.Sub, newAction.WorkflowID, newAction.NodeID, newAction.ActionID)
+                return nil
+        }</span>
+
+        <span class="cov6" title="3">values, err := a.SheetUtils.GetAllContentFromGoogleSheets(&amp;newAction.Document, httpClient, &amp;newAction.ActionID)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil
+        }</span>
+
+        <span class="cov4" title="2">if values == nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | No values found")
+                return nil
+        }</span>
+
+        // Save new token and refrestoken to DB
+        // this operation CAN FAIL to save to DB NOT implemented retries and deadletters
+        <span class="cov4" title="2">updated := a.BrokerCredentialsRepo.UpdateCredential(exchangeCredential, token)
+        if !updated </span><span class="cov1" title="1">{
+                log.Printf("WARN | Failed to update credentials in the database for CredentialID: %s", exchangeCredential.ID)
+                // TODO: retries
+                // TODO: dead letter
+        }</span>
+        // ---
+        // log.Printf("%v", values)
+        <span class="cov4" title="2">str, err := values.MarshalJSON()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | marshalling values to JSON: %v for actionid: %s", err, newAction.ActionID)
+                return nil
+        }</span>
+
+        <span class="cov4" title="2">return &amp;str</span>
+}
+
+// func (a *ActionsServiceImpl) getConfigOAuth(data models.DataCredential) *oauth2.Config {
+//         return &amp;oauth2.Config{
+//                 RedirectURL:  data.RedirectURL,
+//                 ClientID:     data.ClientID,
+//                 ClientSecret: data.ClientSecret,
+//                 Scopes:       data.Scopes,
+//                 Endpoint:     google.Endpoint,
+//         }
+// }
+
+// TODO: repo httpclient
+func (a *ActionsServiceImpl) getClient(ctx *context.Context, config *oauth2.Config, token *oauth2.Token) *http.Client <span class="cov7" title="4">{
+        client := a.HTTPRepo.GetOAuthHTTPClient(ctx, config, token)
+        return client
+}</span>
+
+// func (a *ActionsServiceImpl) GetSpreedSheetID(documentURI *string) *string {
+//         id := strings.Split(*documentURI, "/")[5]
+//         return &amp;id
+// }
+
+// func (a *ActionsServiceImpl) updateCredentialFromGoogle(exchangeCredential *models.RequestExchangeCredential, token *oauth2.Token) *models.RequestExchangeCredential {
+//         exchangeCredential.Data.Token = token.AccessToken
+//         exchangeCredential.Data.TokenRefresh = token.RefreshToken
+//         exchangeCredential.UpdatedAt.Time = time.Now().UTC()
+
+//         // token.expiry already set to 0
+//         exchangeCredential.ExpiresAt.Time = token.Expiry.UTC().Add(-models.TimeDriftForExpire * time.Second)
+//         return exchangeCredential
+// }
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package services
+
+import (
+        "actions_google/pkg/common"
+        "actions_google/pkg/domain/models"
+        "encoding/json"
+        "fmt"
+        "log"
+        "strings"
+        "time"
+)
+
+func (a *ActionsServiceImpl) getDatabaseContentFromNotion(newAction *models.RequestGoogleAction) (data *[]byte) <span class="cov0" title="0">{
+        // ctx := context.Background()
+        // with retries
+        exchangeCredential, err := a.retriesGetCredential(newAction)
+        if err != nil </span><span class="cov0" title="0">{
+                // TODO: dead letter
+                return nil
+        }</span>
+        <span class="cov0" title="0">databaseID := a.getDatabaseID(newAction.Document)
+        contentDB, err := a.HTTPRepo.GetDatabaseNotion(databaseID, &amp;exchangeCredential.Data.Token)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | %v", err)
+                return nil
+        }</span>
+        <span class="cov0" title="0">if len(contentDB.Results) == 0 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">headers, arrContent := a.ActionsNotion.ProcessNotionData(&amp;contentDB.Results)
+        log.Printf("%v %v", headers, arrContent)
+        data = a.serializeNotionContent(headers, arrContent)
+        return data</span>
+}
+
+func (a *ActionsServiceImpl) retriesGetCredential(newAction *models.RequestGoogleAction) (*models.RequestExchangeCredential, error) <span class="cov0" title="0">{
+        for i := 1; i &lt; models.MaxAttempts; i++ </span><span class="cov0" title="0">{
+                exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&amp;newAction.Sub, &amp;newAction.CredentialID, 1)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">if exchangeCredential != nil </span><span class="cov0" title="0">{
+                        return exchangeCredential, err
+                }</span>
+                <span class="cov0" title="0">waitTime := common.RandomDuration(models.MaxRangeSleepDuration, models.MinRangeSleepDuration, i)
+                log.Printf("WARNING | Failed to create action %s for user %s , attempt %d:. Retrying in %v", newAction.ActionID, newAction.Sub, i, waitTime)
+                time.Sleep(waitTime)</span>
+        }
+        <span class="cov0" title="0">return nil, fmt.Errorf("cannot fetching credential by sub %s credentialid %s", newAction.Sub, newAction.CredentialID)</span>
+}
+
+func (a *ActionsServiceImpl) getDatabaseID(documentURI string) *string <span class="cov0" title="0">{
+        splitted := strings.Split(documentURI, "/")
+        idStr := strings.Split(splitted[3], "?")
+        return &amp;idStr[0]
+}</span>
+
+func (a *ActionsServiceImpl) serializeNotionContent(headers *[]string, arrContent *[][]string) *[]byte <span class="cov0" title="0">{
+        processedData := &amp;models.ProcessedNotionData{
+                Headers:     *headers,
+                ContentRows: *arrContent,
+        }
+        jsonData, err := json.Marshal(processedData)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | cannot serializeNotionContent %v %v", headers, arrContent)
+                return nil
+        }</span>
+        <span class="cov0" title="0">return &amp;jsonData</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package services
+
+import (
+        "actions_google/pkg/config"
+        "actions_google/pkg/domain/models"
+        "actions_google/pkg/domain/repos"
+        "fmt"
+        "log"
+        "time"
+)
+
+type AuthServiceImpl struct {
+        jwtGenerator  repos.JWTGenerator
+        zitadelClient repos.ZitadelClient
+        tokenRepo     repos.TokenRepository
+}
+
+func NewAuthService(jwtGenerator repos.JWTGenerator, zitadelClient repos.ZitadelClient, tokenRepo repos.TokenRepository) repos.AuthService <span class="cov0" title="0">{
+        return &amp;AuthServiceImpl{
+                jwtGenerator:  jwtGenerator,
+                zitadelClient: zitadelClient,
+                tokenRepo:     tokenRepo,
+        }
+}</span>
+
+func (s *AuthServiceImpl) GenerateAccessToken() (*string, error) <span class="cov0" title="0">{
+        assertionJWT, err := s.jwtGenerator.GenerateActionUserAssertionJWT(time.Hour)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Cannot generate JWT %v", err)
+        }</span>
+
+        <span class="cov0" title="0">accessToken, expiresIn, err := s.zitadelClient.GenerateActionUserAccessToken(assertionJWT)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | Cannot acces to ACCESS token %v", err)
+                return nil, fmt.Errorf("ERROR | Cannot acces to ACCESS token %v", err)
+        }</span>
+
+        <span class="cov0" title="0">err = s.tokenRepo.SaveToken(accessToken, &amp;expiresIn)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | Failed to save token, %v", err)
+                return nil, fmt.Errorf("ERROR | Failed to save token, %v", err)
+        }</span>
+
+        <span class="cov0" title="0">return accessToken, nil</span>
+}
+
+func (s *AuthServiceImpl) GetCachedActionUserAccessToken() *string <span class="cov0" title="0">{
+        existingToken, err := s.tokenRepo.GetToken()
+        if err != nil &amp;&amp; (err.Error() == "token expired" || err.Error() == "no token found in redis") </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">if existingToken == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">if config.GetEnv("ROTATE_SERVICE_USER_TOKEN", "n") == "y" </span><span class="cov0" title="0">{
+                // to verify
+                isValid, err := s.verifyOnlineActionUserToken(existingToken.AccessToken)
+                if !isValid || err != nil </span><span class="cov0" title="0">{
+                        token, _ := s.GenerateAccessToken()
+                        return token
+                }</span>
+        }
+        <span class="cov0" title="0">return existingToken.AccessToken</span>
+}
+
+func (s *AuthServiceImpl) verifyCachedActionUserToken(token *string) (isOk bool, err error) <span class="cov0" title="0">{
+        cachedAccesToken := s.GetCachedActionUserAccessToken()
+        if config.GetEnv("ROTATE_SERVICE_USER_TOKEN", "n") == "y" </span><span class="cov0" title="0">{
+                if cachedAccesToken == nil </span><span class="cov0" title="0">{
+                        cachedAccesToken, err = s.GenerateAccessToken()
+                }</span>
+        }
+
+        <span class="cov0" title="0">if cachedAccesToken == nil || err != nil </span><span class="cov0" title="0">{
+                return false, fmt.Errorf("ERROR | AccessToken cannot be empty")
+        }</span>
+
+        <span class="cov0" title="0">if *cachedAccesToken == *token </span><span class="cov0" title="0">{
+                return true, nil
+        }</span>
+        <span class="cov0" title="0">return false, fmt.Errorf("ERROR | invalid user token")</span>
+}
+
+func (s *AuthServiceImpl) verifyOnlineActionUserToken(token *string) (isValid bool, err error) <span class="cov0" title="0">{
+        assertionJWT, err := s.jwtGenerator.GenerateAppInstrospectJWT(time.Hour)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Cannot generate JWT %v", err)
+        }</span> // not validate needs to generate
+        <span class="cov0" title="0">isValid, err = s.zitadelClient.ValidateActionUserAccessToken(token, &amp;assertionJWT)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | Cannot get UserToken %s error: %v", *token, err)
+                return false, err
+        }</span>
+        <span class="cov0" title="0">return isValid, err</span>
+}
+
+func (s *AuthServiceImpl) VerifyActionUserToken(token string) (isOk bool, err error) <span class="cov0" title="0">{
+        if token == "" </span><span class="cov0" title="0">{
+                return false, fmt.Errorf("ERROR | AccessToken cannot be empty")
+        }</span>
+
+        <span class="cov0" title="0">isOk, err = s.verifyCachedActionUserToken(&amp;token)
+        if err == nil &amp;&amp; isOk </span><span class="cov0" title="0">{
+                return isOk, err
+        }</span>
+
+        <span class="cov0" title="0">isOk, err = s.verifyOnlineActionUserToken(&amp;token)
+        return isOk, err</span>
+}
+
+func (s *AuthServiceImpl) VerifyUserToken(userToken string) (bool, bool) <span class="cov0" title="0">{
+        if userToken == "" </span><span class="cov0" title="0">{
+                return false, true
+        }</span>
+        <span class="cov0" title="0">assertionJWT, err := s.jwtGenerator.GenerateAppInstrospectJWT(time.Hour)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Cannot generate JWT %v", err)
+                return false, true
+        }</span>
+
+        <span class="cov0" title="0">isValid, expire, err := s.zitadelClient.ValidateUserToken(userToken, assertionJWT)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | Cannot get UserToken %s error: %v", userToken, err)
+                return false, true
+        }</span>
+        // drift for jwt expire early for 10 minutes
+        <span class="cov0" title="0">isExpired := (time.Now().UTC().Unix() - models.TimeDriftForExpire) &gt; expire
+        return isValid, isExpired</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package services
+
+import (
+        "actions_google/pkg/domain/models"
+        "context"
+        "log"
+
+        "golang.org/x/oauth2"
+        "golang.org/x/oauth2/google"
+)
+
+type TokenAuthImpl struct {
+}
+
+func NewTokenAuthImpl() *TokenAuthImpl <span class="cov0" title="0">{
+        return &amp;TokenAuthImpl{}
+}</span>
+
+// function to generate a new refresh token
+// once the refresh token is generated,
+// DB needed to be updated
+func (t *TokenAuthImpl) GenerateTokenOAuth(
+        ctx *context.Context,
+        config *oauth2.Config,
+        cred *models.RequestExchangeCredential,
+) *oauth2.Token <span class="cov0" title="0">{
+        token := &amp;oauth2.Token{RefreshToken: cred.Data.TokenRefresh}
+        tokenSource := config.TokenSource(*ctx, token)
+        // if OAuth consent screen is in dev mode, those
+        // refresh tokens it will expire in 7 days
+        newToken, err := tokenSource.Token()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | cannot renovate token: config %v %v", config, cred)
+                return nil
+        }</span>
+        <span class="cov0" title="0">return newToken</span>
+}
+
+func (t *TokenAuthImpl) GetConfigOAuth(data models.DataCredential) *oauth2.Config <span class="cov0" title="0">{
+        return &amp;oauth2.Config{
+                RedirectURL:  data.RedirectURL,
+                ClientID:     data.ClientID,
+                ClientSecret: data.ClientSecret,
+                Scopes:       data.Scopes,
+                Endpoint:     google.Endpoint,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package services
+
+import (
+        "context"
+        "fmt"
+        "net/http"
+        "strings"
+
+        "google.golang.org/api/option"
+        "google.golang.org/api/sheets/v4"
+)
+
+type SheetUtilsImpl struct{}
+
+func NewSheetUtilsImpl() *SheetUtilsImpl <span class="cov0" title="0">{
+        return &amp;SheetUtilsImpl{}
+}</span>
+
+func (s *SheetUtilsImpl) GetAllContentFromGoogleSheets(document *string, client *http.Client, actionID *string) (*sheets.ValueRange, error) <span class="cov0" title="0">{
+        ctx := context.Background()
+        sheetsService, err := s.CreateSheetsService(ctx, client)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("ERROR | not possible to initialize google sheets service: %v", err)
+        }</span>
+        <span class="cov0" title="0">spreadsheetID := s.GetSpreadsheetID(document)
+        if spreadsheetID == nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("ERROR | cannot get spreadsheetID")
+        }</span>
+        <span class="cov0" title="0">if *spreadsheetID == "" </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("ERROR | cannot get spreadsheetID")
+        }</span>
+
+        <span class="cov0" title="0">spreadsheet, err := s.GetSpreadsheet(ctx, sheetsService, *spreadsheetID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("ERROR | cannot fetch spreadsheetID: %s error: %v", *spreadsheetID, err)
+        }</span>
+        <span class="cov0" title="0">values, err := s.GetValuesFromSheet(spreadsheet, sheetsService, spreadsheetID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("ERROR | cannot get values for spreadsheetID: %s error: %v  for actioid: %s", *spreadsheetID, err, *actionID)
+        }</span>
+        <span class="cov0" title="0">return values, nil</span>
+}
+
+func (s *SheetUtilsImpl) GetSpreadsheetID(documentURI *string) *string <span class="cov0" title="0">{
+        splitted := strings.Split(*documentURI, "/")
+        // clean and check if uri not contains ?
+        // fixed position in array 5
+        cleanedArray := strings.Split(splitted[5], "?")
+        if len(cleanedArray) &gt; 0 </span><span class="cov0" title="0">{
+                return &amp;cleanedArray[0]
+        }</span>
+        <span class="cov0" title="0">return &amp;splitted[5]</span>
+}
+
+func (s *SheetUtilsImpl) GetValuesFromSheet(sheets *sheets.Spreadsheet, sheetsService *sheets.Service, spreadsheetID *string) (*sheets.ValueRange, error) <span class="cov0" title="0">{
+        for _, sheet := range sheets.Sheets </span><span class="cov0" title="0">{
+                // properties := sheet.Properties
+                // gridProperties := properties.GridProperties
+                // dinamic range
+                // readRange := fmt.Sprintf("%s", sheetName)
+                // readRange := fmt.Sprintf("%s!A1:%s%d", sheetName, getColumnName(gridProperties.ColumnCount), gridProperties.RowCount)
+                sheetName := sheet.Properties.Title
+                readRange := sheetName
+
+                values, err := sheetsService.Spreadsheets.Values.Get(*spreadsheetID, readRange).Do()
+                return values, err
+        }</span>
+        <span class="cov0" title="0">return nil, fmt.Errorf("ERROR | not sheets")</span>
+}
+
+func (s *SheetUtilsImpl) CreateSheetsService(ctx context.Context, client *http.Client) (*sheets.Service, error) <span class="cov0" title="0">{
+        return sheets.NewService(ctx, option.WithHTTPClient(client))
+}</span>
+
+func (s *SheetUtilsImpl) GetSpreadsheet(ctx context.Context, srv *sheets.Service, spreadsheetID string) (*sheets.Spreadsheet, error) <span class="cov0" title="0">{
+        return srv.Spreadsheets.Get(spreadsheetID).Context(ctx).Do()
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package redisclient
+
+import (
+        // "context"
+        "actions_google/pkg/common"
+        "actions_google/pkg/domain/models"
+        "fmt"
+        "log"
+        "time"
+        // "github.com/go-redis/redis/v8"
+)
+
+const (
+        ActionsGlobalAll = "actions:all"
+        EmptyValue       = "_"
+)
+
+type ActionsService interface {
+}
+
+type ActionsRepository struct {
+        redisClient *RedisClient
+}
+
+func NewActionsRepository(redisClient *RedisClient) *ActionsRepository <span class="cov0" title="0">{
+        return &amp;ActionsRepository{redisClient: redisClient}
+}</span>
+
+func (a *ActionsRepository) GetActionsGlobalAll() string <span class="cov0" title="0">{
+        return ActionsGlobalAll
+}</span>
+
+func (a *ActionsRepository) ValidateActionGlobalUUID(uuid *string) (bool, error) <span class="cov0" title="0">{
+        exists, err := a.redisClient.Hexists(ActionsGlobalAll, *uuid)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("ERROR | Redis HExists error: %v", err)
+                return true, err
+        }</span>
+        <span class="cov0" title="0">return exists, err</span>
+}
+
+// func (a *ActionsRepository) Create(newAction *models.RequestGoogleAction) (created bool, existed bool, err error) {
+//         ctx := context.Background()
+
+//         txf := func(tx *redis.Tx) error {
+//                 lockKey := fmt.Sprintf("lock:%s", newAction.ActionID)
+//                 key := ActionsGlobalAll
+//                 field := newAction.ActionID
+//                 value := newAction.Sub
+
+//                 // Check if actionid already exists
+//                 exists, err := tx.HExists(ctx, key, field).Result()
+//                 if err != nil {
+//                         return err
+//                 }
+//                 if exists {
+//                         return ErrActionExists
+//                 }
+
+//                 // SETNX only insert to set the lock key if cannot insert lock exist
+//                 // dummy value
+//                 setnxRes, err := tx.SetNX(ctx, lockKey, "1", models.MaxTimeForLocks).Result()
+//                 if err != nil {
+//                         return err
+//                 }
+//                 if !setnxRes {
+//                         // Lock already exists
+//                         return ErrActionExists
+//                 }
+
+//                 // Proceed to set the action
+//                 _, err = tx.HSet(ctx, key, field, value).Result()
+//                 if err != nil {
+//                         // Clean up the lock if setting the action fails
+//                         tx.Del(ctx, lockKey)
+//                         return err
+//                 }
+
+//                 return nil
+//         }
+
+//         created, existed, err = a.redisClient.SetAction(ctx, newAction, txf)
+//         return created, existed, err
+// }
+
+// func (a *ActionsRepository) Remove(newAction *models.RequestGoogleAction) bool {
+//         countRemoved, err := a.redisClient.Hdel(newAction.ActionID, newAction.Sub)
+//         if countRemoved == 1 &amp;&amp; err == nil {
+//                 return true
+//         }
+//         return false
+// }
+
+func (a *ActionsRepository) AcquireLock(key, value string, expiration time.Duration) (locked bool, err error) <span class="cov0" title="0">{
+        for i := 1; i &lt; models.MaxAttempts; i++ </span><span class="cov0" title="0">{
+                locked, err = a.redisClient.AcquireLock(key, value, expiration)
+                if err == nil </span><span class="cov0" title="0">{
+                        return locked, err
+                }</span>
+
+                <span class="cov0" title="0">waitTime := common.RandomDuration(models.MaxRangeSleepDuration, models.MinRangeSleepDuration, i)
+                log.Printf("ERROR | Cannot connect to redis for key %s, attempt %d: %v. Retrying in %v", key, i, err, waitTime)
+                time.Sleep(waitTime)</span>
+        }
+        <span class="cov0" title="0">return false, fmt.Errorf("ERROR | Cannot create lock for key %s. More than 10 intents", key)</span>
+}
+
+func (a *ActionsRepository) RemoveLock(key string) bool <span class="cov0" title="0">{
+        for i := 1; i &lt; models.MaxAttempts; i++ </span><span class="cov0" title="0">{
+                countRemoved, err := a.redisClient.RemoveLock(key)
+                if countRemoved == 0 </span><span class="cov0" title="0">{
+                        log.Printf("WARNING | Key already removed, previuous process take more than 20 seconds")
+                }</span>
+                <span class="cov0" title="0">if err == nil &amp;&amp; countRemoved &lt;= 1 </span><span class="cov0" title="0">{
+                        return true
+                }</span>
+
+                <span class="cov0" title="0">waitTime := common.RandomDuration(models.MaxRangeSleepDuration, models.MinRangeSleepDuration, i)
+                log.Printf("ERROR | Cannot connect to redis for key %s, attempt %d: %v. Retrying in %v", key, i, err, waitTime)
+                time.Sleep(waitTime)</span>
+        }
+        <span class="cov0" title="0">return false</span>
+}
+
+func (a *ActionsRepository) SetNX(hashKey, actionID string, expiration time.Duration) (bool, error) <span class="cov0" title="0">{
+        inserted, err := a.redisClient.SetEx(hashKey, actionID, expiration)
+        return inserted, err
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package redisclient
+
+import (
+        "actions_google/pkg/config"
+        "context"
+        "fmt"
+        "log"
+
+        "time"
+
+        "github.com/go-redis/redis/v8"
+)
+
+type RedisClient struct {
+        Client *redis.Client
+        Ctx    context.Context
+}
+
+var ErrActionExists = fmt.Errorf("action already exists")
+
+func NewRedisClient() *RedisClient <span class="cov0" title="0">{
+        opt, err := redis.ParseURL(config.GetEnv("VAULT_URI", ""))
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Not connected to Redis. Cannot parse Redis URI %s", config.GetEnv("VAULT_URI", ""))
+        }</span>
+
+        <span class="cov0" title="0">rdb := redis.NewClient(opt)
+        // _, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        _, cancel := context.WithCancel(context.Background())
+        defer cancel()
+
+        if rdb.Ping(context.Background()).Val() != "PONG" </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Server Redis not pong")
+        }</span>
+
+        <span class="cov0" title="0">return &amp;RedisClient{
+                Client: rdb,
+                Ctx:    context.Background(),
+        }</span>
+}
+
+func (r *RedisClient) Set(key string, value interface{}) error <span class="cov0" title="0">{
+        return r.Client.Set(r.Ctx, key, value, 0).Err()
+}</span>
+
+func (r *RedisClient) SetEx(key string, value interface{}, expiration time.Duration) (bool, error) <span class="cov0" title="0">{
+        result, err := r.Client.Set(r.Ctx, key, value, expiration).Result()
+        return result == "OK", err
+}</span>
+
+func (r *RedisClient) Hset(key string, field string, values interface{}) bool <span class="cov0" title="0">{
+        inserted := r.Client.HSet(r.Ctx, key, field, values).Val()
+        return inserted != 0
+}</span>
+
+func (r *RedisClient) Hget(key string, field string) error <span class="cov0" title="0">{
+        return r.Client.HGet(r.Ctx, key, field).Err()
+}</span>
+
+func (r *RedisClient) Hexists(key string, field string) (bool, error) <span class="cov0" title="0">{
+        return r.Client.HExists(r.Ctx, key, field).Result()
+}</span>
+
+func (r *RedisClient) Exists(key string) (int64, error) <span class="cov0" title="0">{
+        return r.Client.Exists(r.Ctx, key).Result()
+}</span>
+
+func (r *RedisClient) Get(key string) (string, error) <span class="cov0" title="0">{
+        result, err := r.Client.Get(r.Ctx, key).Result()
+        if err == redis.Nil </span><span class="cov0" title="0">{
+                return "", nil
+        }</span>
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov0" title="0">return result, nil</span>
+}
+
+// REDO
+func (r *RedisClient) WatchToken(data string, key string, expires time.Duration) error <span class="cov0" title="0">{
+        err := r.Client.Watch(r.Ctx, func(tx *redis.Tx) error </span><span class="cov0" title="0">{
+                _, err := tx.TxPipelined(r.Ctx, func(pipe redis.Pipeliner) error </span><span class="cov0" title="0">{
+                        err := pipe.SetNX(r.Ctx, key, data, expires).Err()
+                        return err
+                }</span>)
+                <span class="cov0" title="0">return err</span>
+        }, key)
+
+        <span class="cov0" title="0">return err</span>
+}
+
+func (r *RedisClient) AcquireLock(key, value string, expiration time.Duration) (bool, error) <span class="cov0" title="0">{
+        return r.Client.SetNX(r.Ctx, key, value, expiration).Result()
+}</span>
+
+func (r *RedisClient) RemoveLock(key string) (int64, error) <span class="cov0" title="0">{
+        result, err := r.Client.Del(r.Ctx, key).Result()
+        return result, err
+}</span>
+
+func (r *RedisClient) Hdel(key string, field string) (int64, error) <span class="cov0" title="0">{
+        result, err := r.Client.HDel(r.Ctx, key, field).Result()
+        return result, err
+}</span>
+
+func (r *RedisClient) WatchAndExecute(ctx context.Context, keys []string, txFunc func(tx *redis.Tx) error) error <span class="cov0" title="0">{
+        return r.Client.Watch(ctx, txFunc, keys...)
+}</span>
+
+func (r *RedisClient) ExecuteTransaction(ctx context.Context, keys []string, txFunc func(tx *redis.Tx) error) error <span class="cov0" title="0">{
+        return r.WatchAndExecute(ctx, keys, txFunc)
+}</span>
+
+func (r *RedisClient) HSetNX(key string, field *string, value string) (bool, error) <span class="cov0" title="0">{
+        return r.Client.HSetNX(r.Ctx, key, *field, value).Result()
+}</span>
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package tokenrepo
+
+import (
+        "encoding/json"
+        "fmt"
+        "log"
+
+        "actions_google/pkg/config"
+        "actions_google/pkg/domain/models"
+        "actions_google/pkg/infra/redisclient"
+        "sync"
+        "time"
+)
+
+type Token struct {
+        ObtainedAt  time.Time     `json:"obtained_at"`
+        AccessToken *string       `json:"access_token"`
+        TokenType   string        `json:"token_type"`
+        ExpiresIn   time.Duration `json:"expires_in"`
+}
+
+type TokenRepository struct {
+        mu          sync.RWMutex
+        redisClient *redisclient.RedisClient
+        key         string
+        token       *Token
+}
+
+func NewTokenRepository(redisClient *redisclient.RedisClient) *TokenRepository <span class="cov0" title="0">{
+        return &amp;TokenRepository{
+                redisClient: redisClient,
+                key:         "serviceuser_action:token",
+        }
+}</span>
+
+func (r *TokenRepository) GetToken() (*Token, error) <span class="cov0" title="0">{
+        r.mu.RLock()
+        defer r.mu.RUnlock()
+
+        if r.token != nil </span><span class="cov0" title="0">{
+                if r.isExpired(*r.token) </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("token expired")
+                }</span>
+                <span class="cov0" title="0">return r.token, nil</span>
+        }
+
+        <span class="cov0" title="0">data, err := r.redisClient.Get(r.key)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if data == "" </span><span class="cov0" title="0">{ // Not exist key in redis
+                return nil, fmt.Errorf("no token found in redis")
+        }</span>
+
+        <span class="cov0" title="0">var token Token
+        err = json.Unmarshal([]byte(data), &amp;token)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">if r.isExpired(token) </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("token expired")
+        }</span>
+
+        <span class="cov0" title="0">r.token = &amp;token
+        return r.token, nil</span>
+}
+
+func (r *TokenRepository) isExpired(token Token) bool <span class="cov0" title="0">{
+        if config.GetEnv("ROTATE_SERVICE_USER_TOKEN", "n") == "y" </span><span class="cov0" title="0">{
+                if time.Now().UTC().After(token.ObtainedAt.Add(token.ExpiresIn * time.Second)) </span><span class="cov0" title="0">{
+                        return true
+                }</span>
+        }
+        <span class="cov0" title="0">return false</span>
+}
+
+func (r *TokenRepository) SaveToken(accessToken *string, expiresIn *time.Duration) error <span class="cov0" title="0">{
+        r.mu.Lock()
+        defer r.mu.Unlock()
+
+        token := Token{
+                AccessToken: accessToken,
+                ExpiresIn:   *expiresIn - models.SaveOffset, // -10 seconds
+                ObtainedAt:  time.Now().UTC(),
+        }
+
+        data, err := json.Marshal(token)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">err = r.redisClient.WatchToken(string(data), r.key, (token.ExpiresIn)*time.Second)
+        if err == nil </span><span class="cov0" title="0">{
+                r.token = &amp;token
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">log.Printf("ERROR | Failed to save token, %v", err)
+        return err</span>
+}
+
+func (r *TokenRepository) SetToken(token *Token) <span class="cov0" title="0">{
+        r.mu.Lock()
+        defer r.mu.Unlock()
+        r.token = token
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package vaults
+
+import (
+        "log"
+        "os"
+
+        "github.com/joho/godotenv"
+)
+
+func GetEnvsFromVault() <span class="cov0" title="0">{
+        envValues := GetAllEnvsFromRedis()
+        envsMaped := serializeEnvs(envValues)
+        SetEnvs(envsMaped)
+}</span>
+
+func serializeEnvs(envStr string) map[string]string <span class="cov0" title="0">{
+        envMap, err := godotenv.Unmarshal(envStr)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panic("ERROR | Cannot serialize string from Env")
+        }</span>
+        <span class="cov0" title="0">return envMap</span>
+}
+
+func SetEnvs(envsMapped map[string]string) <span class="cov0" title="0">{
+        for key, value := range envsMapped </span><span class="cov0" title="0">{
+                os.Setenv(key, value)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package vaults
+
+import (
+        "context"
+        "log"
+        "os"
+
+        "github.com/go-redis/redis/v8"
+)
+
+// redis with ctx with timeout ?
+var ctx = context.Background()
+
+const (
+        PONG = "PONG"
+)
+
+func GetAllEnvsFromRedis() string <span class="cov0" title="0">{
+        uriVault := os.Getenv("VAULT_URI")
+        vaultKeyFrontendEnvs := os.Getenv("VAULT_KEY_BACKEND_ENVS")
+
+        if uriVault == "" </span><span class="cov0" title="0">{
+                log.Print("ERROR | Cannot load initial VAULT_URI")
+                return ""
+        }</span>
+        <span class="cov0" title="0">if vaultKeyFrontendEnvs == "" </span><span class="cov0" title="0">{
+                vaultKeyFrontendEnvs = "vault_backend_reipaz"
+        }</span>
+        <span class="cov0" title="0">opt, err := redis.ParseURL(uriVault)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Cannot parse uri %s error: %v", uriVault, err)
+        }</span>
+        <span class="cov0" title="0">redisClient := redis.NewClient(opt)
+        defer redisClient.Close()
+
+        err = pingRedis(ctx, redisClient)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panic("ERROR | Not possible to ping REDIS vault")
+        }</span>
+
+        <span class="cov0" title="0">envsStr, err := getEnvsFromRedis(ctx, redisClient, vaultKeyFrontendEnvs)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Cannot load VAULT_KEY_FRONTEND_ENVS %v", err)
+        }</span>
+        <span class="cov0" title="0">return envsStr</span>
+}
+
+func pingRedis(ctx context.Context, client *redis.Client) error <span class="cov0" title="0">{
+        status, err := client.Ping(ctx).Result()
+        if err != nil || status != "PONG" </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Not possible to ping REDIS vault error: %v", err)
+        }</span>
+        <span class="cov0" title="0">return err</span>
+}
+
+func getEnvsFromRedis(ctx context.Context, client *redis.Client, key string) (string, error) <span class="cov0" title="0">{
+        envsStr, err := client.Get(ctx, key).Result()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panicf("ERROR | Cannot load VAULT_KEY_FRONTEND_ENVS %v", err)
+        }</span>
+        <span class="cov0" title="0">return envsStr, err</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

@@ -39,8 +39,8 @@ type ResponseGetGoogleSheetByID struct {
 
 type NotionDatabaseQueryResponse struct {
 	Object     string        `json:"object"`
-	Results    []interface{} `json:"results"`
 	NextCursor string        `json:"next_cursor"`
+	Results    []interface{} `json:"results"`
 	HasMore    bool          `json:"has_more"`
 }
 
