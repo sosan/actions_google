@@ -5,14 +5,14 @@ import (
 	"strings"
 )
 
-type ActionsNotion struct {
+type TransformNotionRepo struct {
 }
 
-func NewActionsClient() *ActionsNotion {
-	return &ActionsNotion{}
+func NewActionsClient() *TransformNotionRepo {
+	return &TransformNotionRepo{}
 }
 
-func (n *ActionsNotion) ProcessNotionData(results *[]interface{}) (*[]string, *[][]string) {
+func (n *TransformNotionRepo) ProcessNotionData(results *[]interface{}) (*[]string, *[][]string) {
 	headerMap := make(map[string]bool)
 	var headers []string
 	// unique headers
@@ -49,7 +49,7 @@ func (n *ActionsNotion) ProcessNotionData(results *[]interface{}) (*[]string, *[
 	return &headers, &csvData
 }
 
-func (n *ActionsNotion) extractPropertyValue(prop map[string]interface{}) string {
+func (n *TransformNotionRepo) extractPropertyValue(prop map[string]interface{}) string {
 	propType, ok := prop["type"].(string)
 	if !ok {
 		return ""

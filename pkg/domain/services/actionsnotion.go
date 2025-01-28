@@ -1,24 +1,24 @@
 package services
 
 import (
-	"actions_google/pkg/common"
+	
 	"actions_google/pkg/domain/models"
 	"encoding/json"
-	"fmt"
+	
 	"log"
 	"strings"
-	"time"
+	
 )
 
-func (a *ActionsServiceImpl) getDatabaseContentFromNotion(newAction *models.RequestGoogleAction) (data *[]byte) {
+func (a *ActionsServiceImpl) GetDatabaseContentFromNotion(newAction *models.RequestGoogleAction) (data *[]byte) {
 	// ctx := context.Background()
 	// with retries
-	exchangeCredential, err := a.retriesGetCredential(newAction)
+	exchangeCredential, err := a.RetriesGetCredential(newAction)
 	if err != nil {
 		// TODO: dead letter
 		return nil
 	}
-	databaseID := a.getDatabaseID(newAction.Document)
+	databaseID := a.GetDatabaseID(newAction.Document)
 	contentDB, err := a.HTTPRepo.GetDatabaseNotion(databaseID, &exchangeCredential.Data.Token)
 	if err != nil {
 		log.Printf("ERROR | %v", err)
@@ -29,34 +29,19 @@ func (a *ActionsServiceImpl) getDatabaseContentFromNotion(newAction *models.Requ
 	}
 	headers, arrContent := a.ActionsNotion.ProcessNotionData(&contentDB.Results)
 	log.Printf("%v %v", headers, arrContent)
-	data = a.serializeNotionContent(headers, arrContent)
+	data = a.SerializeNotionContent(headers, arrContent)
 	return data
 }
 
-func (a *ActionsServiceImpl) retriesGetCredential(newAction *models.RequestGoogleAction) (*models.RequestExchangeCredential, error) {
-	for i := 1; i < models.MaxAttempts; i++ {
-		exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
-		if err != nil {
-			log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
-			return nil, err
-		}
-		if exchangeCredential != nil {
-			return exchangeCredential, err
-		}
-		waitTime := common.RandomDuration(models.MaxRangeSleepDuration, models.MinRangeSleepDuration, i)
-		log.Printf("WARNING | Failed to create action %s for user %s , attempt %d:. Retrying in %v", newAction.ActionID, newAction.Sub, i, waitTime)
-		time.Sleep(waitTime)
-	}
-	return nil, fmt.Errorf("cannot fetching credential by sub %s credentialid %s", newAction.Sub, newAction.CredentialID)
-}
 
-func (a *ActionsServiceImpl) getDatabaseID(documentURI string) *string {
+
+func (a *ActionsServiceImpl) GetDatabaseID(documentURI string) *string {
 	splitted := strings.Split(documentURI, "/")
 	idStr := strings.Split(splitted[3], "?")
 	return &idStr[0]
 }
 
-func (a *ActionsServiceImpl) serializeNotionContent(headers *[]string, arrContent *[][]string) *[]byte {
+func (a *ActionsServiceImpl) SerializeNotionContent(headers *[]string, arrContent *[][]string) *[]byte {
 	processedData := &models.ProcessedNotionData{
 		Headers:     *headers,
 		ContentRows: *arrContent,

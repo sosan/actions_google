@@ -1,8 +1,12 @@
 package services
 
 import (
+	"actions_google/pkg/common"
 	"actions_google/pkg/domain/models"
 	"actions_google/pkg/domain/repos"
+	"fmt"
+	"log"
+	"time"
 )
 
 type ActionsServiceImpl struct {
@@ -11,7 +15,7 @@ type ActionsServiceImpl struct {
 	BrokerCredentialsRepo repos.CredentialBrokerRepository
 	HTTPRepo              repos.ActionsHTTPRepository
 	CredentialHTTP        repos.CredentialHTTPRepository
-	ActionsNotion         repos.ActionsNotion
+	ActionsNotion         repos.TransformNotion
 	TokenAuth             repos.TokenAuth
 	SheetUtils            repos.SheetUtils
 }
@@ -22,7 +26,7 @@ func NewActionsService(
 	repoHTTP repos.ActionsHTTPRepository,
 	credentialRepo repos.CredentialHTTPRepository,
 	credentialBroker repos.CredentialBrokerRepository,
-	notionRepo repos.ActionsNotion,
+	notionRepo repos.TransformNotion,
 	tokenAuth repos.TokenAuth,
 	sheetUtils repos.SheetUtils,
 
@@ -65,7 +69,7 @@ func (a *ActionsServiceImpl) GetNotion(newAction *models.RequestGoogleAction) (d
 	// retries???
 	switch newAction.Operation {
 	case "getallcontent":
-		data = a.getDatabaseContentFromNotion(newAction)
+		data = a.GetDatabaseContentFromNotion(newAction)
 	default:
 		return nil
 	}
@@ -75,4 +79,21 @@ func (a *ActionsServiceImpl) GetNotion(newAction *models.RequestGoogleAction) (d
 	newAction.Data = string(*data)
 	a.BrokerActionsRepo.SendAction(newAction)
 	return data
+}
+
+func (a *ActionsServiceImpl) RetriesGetCredential(newAction *models.RequestGoogleAction) (*models.RequestExchangeCredential, error) {
+	for i := 1; i < models.MaxAttempts; i++ {
+		exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
+		if err != nil {
+			log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
+			return nil, err
+		}
+		if exchangeCredential != nil {
+			return exchangeCredential, err
+		}
+		waitTime := common.RandomDuration(models.MaxRangeSleepDuration, models.MinRangeSleepDuration, i)
+		log.Printf("WARNING | Failed to create action %s for user %s , attempt %d:. Retrying in %v", newAction.ActionID, newAction.Sub, i, waitTime)
+		time.Sleep(waitTime)
+	}
+	return nil, fmt.Errorf("cannot fetching credential by sub %s credentialid %s", newAction.Sub, newAction.CredentialID)
 }

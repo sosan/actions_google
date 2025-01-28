@@ -11,12 +11,17 @@ import (
 
 func (a *ActionsServiceImpl) GetAllContentFromGoogleSheets(newAction *models.RequestGoogleAction) (data *[]byte) {
 	ctx := context.Background()
-	//TODO: quick check if spreadsheetID is valid
-	exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
+	exchangeCredential, err := a.RetriesGetCredential(newAction)
 	if err != nil {
 		log.Printf("ERROR | Cannot fetching credential by ID: %v", err)
+		// TODO: dead letter
 		return nil
 	}
+
+	// exchangeCredential, err := a.CredentialHTTP.GetCredentialByID(&newAction.Sub, &newAction.CredentialID, 1)
+	// if err != nil {
+	// 	return nil
+	// }
 	config := a.TokenAuth.GetConfigOAuth(exchangeCredential.Data)
 	// this new token needs to be updated to DB
 	token := a.TokenAuth.GenerateTokenOAuth(&ctx, config, exchangeCredential)
@@ -60,33 +65,8 @@ func (a *ActionsServiceImpl) GetAllContentFromGoogleSheets(newAction *models.Req
 	return &str
 }
 
-// func (a *ActionsServiceImpl) getConfigOAuth(data models.DataCredential) *oauth2.Config {
-// 	return &oauth2.Config{
-// 		RedirectURL:  data.RedirectURL,
-// 		ClientID:     data.ClientID,
-// 		ClientSecret: data.ClientSecret,
-// 		Scopes:       data.Scopes,
-// 		Endpoint:     google.Endpoint,
-// 	}
-// }
-
 // TODO: repo httpclient
 func (a *ActionsServiceImpl) getClient(ctx *context.Context, config *oauth2.Config, token *oauth2.Token) *http.Client {
 	client := a.HTTPRepo.GetOAuthHTTPClient(ctx, config, token)
 	return client
 }
-
-// func (a *ActionsServiceImpl) GetSpreedSheetID(documentURI *string) *string {
-// 	id := strings.Split(*documentURI, "/")[5]
-// 	return &id
-// }
-
-// func (a *ActionsServiceImpl) updateCredentialFromGoogle(exchangeCredential *models.RequestExchangeCredential, token *oauth2.Token) *models.RequestExchangeCredential {
-// 	exchangeCredential.Data.Token = token.AccessToken
-// 	exchangeCredential.Data.TokenRefresh = token.RefreshToken
-// 	exchangeCredential.UpdatedAt.Time = time.Now().UTC()
-
-// 	// token.expiry already set to 0
-// 	exchangeCredential.ExpiresAt.Time = token.Expiry.UTC().Add(-models.TimeDriftForExpire * time.Second)
-// 	return exchangeCredential
-// }

@@ -48,6 +48,6 @@ type CredentialBrokerRepository interface {
 	UpdateCredentialFromGoogle(exchangeCredential *models.RequestExchangeCredential, token *oauth2.Token) *models.RequestExchangeCredential
 }
 
-type ActionsNotion interface {
+type TransformNotion interface {
 	ProcessNotionData(results *[]interface{}) (*[]string, *[][]string)
 }
