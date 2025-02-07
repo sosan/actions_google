@@ -21,6 +21,7 @@ type MockStructured struct {
 	HTTPRepo              *mocks.ActionsHTTPRepository
 	TokenAuth             *mocks.TokenAuth
 	SheetUtils            *mocks.SheetUtils
+	ActionsNotion         *mocks.ActionsNotion
 }
 
 func createNewMocks() *MockStructured {
@@ -30,6 +31,7 @@ func createNewMocks() *MockStructured {
 		HTTPRepo:              new(mocks.ActionsHTTPRepository),
 		TokenAuth:             new(mocks.TokenAuth),
 		SheetUtils:            new(mocks.SheetUtils),
+		ActionsNotion:         new(mocks.ActionsNotion),
 	}
 	return ctrl
 }

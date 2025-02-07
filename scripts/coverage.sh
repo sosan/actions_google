@@ -1,4 +1,4 @@
-go test -v ./tests/... \
+go test -v ./pkg/... ./tests/... \
   -coverpkg=./pkg/... \
   -coverprofile=coverage.out \
   -covermode=atomic
