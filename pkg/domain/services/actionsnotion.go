@@ -1,13 +1,13 @@
 package services
 
 import (
-	
 	"actions_google/pkg/domain/models"
 	"encoding/json"
-	
+
 	"log"
 	"strings"
-	
+
+	"github.com/google/uuid"
 )
 
 func (a *ActionsServiceImpl) GetDatabaseContentFromNotion(newAction *models.RequestGoogleAction) (data *[]byte) {
@@ -33,12 +33,35 @@ func (a *ActionsServiceImpl) GetDatabaseContentFromNotion(newAction *models.Requ
 	return data
 }
 
-
-
+// GetDatabaseID returns the ID of the database from the document URI
+// Notion Pattern URI https://www.notion.so/{workspace}/{databaseID}?v={version}
+// Notion Pattern URI https://www.notion.so/{databaseID}?v={version}
+// in validation we checked if documentURI is empty
+// in validation we checked if documentURI contains NotionHost
 func (a *ActionsServiceImpl) GetDatabaseID(documentURI string) *string {
-	splitted := strings.Split(documentURI, "/")
-	idStr := strings.Split(splitted[3], "?")
-	return &idStr[0]
+	if strings.TrimSpace(documentURI) == "" {
+		return nil
+	}
+
+	splitted := strings.SplitN(documentURI, models.NotionHost, 2)
+	if len(splitted) < 2 {
+		return nil
+	}
+
+	pathAndQuery := strings.SplitN(splitted[1], "?", 2)[0]
+	pathSegments := strings.Split(strings.Trim(pathAndQuery, "/"), "/")
+
+	if len(pathSegments) == 0 {
+		return nil
+	}
+
+	databaseID := pathSegments[len(pathSegments)-1]
+	if _, err := uuid.Parse(databaseID); err != nil {
+		log.Printf("ERROR | Cannot parse ID: %v", err)
+		return nil
+	}
+
+	return &databaseID
 }
 
 func (a *ActionsServiceImpl) SerializeNotionContent(headers *[]string, arrContent *[][]string) *[]byte {

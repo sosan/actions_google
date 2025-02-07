@@ -85,6 +85,18 @@ func ValidateNotionFields() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+		// Frontend did first validation, backend second validation and third validation this one
+		if !strings.Contains(currentReq.Actions.Document, models.NotionHost) {
+			ctx.JSON(http.StatusBadRequest, NewInvalidRequestError(models.InvalidJSON, http.StatusBadRequest))
+			ctx.Abort()
+			return
+		}
+		// Frontend did first validation, backend second validation and third validation this one
+		if strings.TrimSpace(currentReq.Actions.Document) == "" {
+			ctx.JSON(http.StatusBadRequest, NewInvalidRequestError(models.InvalidJSON, http.StatusBadRequest))
+			ctx.Abort()
+			return
+		}
 
 		// TODO:
 		// check operation // getallcontent

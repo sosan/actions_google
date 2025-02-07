@@ -51,3 +51,8 @@ func GetEnv(key, fallback string) string {
 	}
 	return fallback
 }
+
+func SetEnv(key, value string) error {
+	err := os.Setenv(key, value)
+	return err
+}

@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"time"
 
@@ -29,8 +30,10 @@ func NewRedisClient() *RedisClient {
 	_, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if rdb.Ping(context.Background()).Val() != "PONG" {
-		log.Panicf("ERROR | Server Redis not pong")
+	if os.Getenv("TEST") == "" {
+		if rdb.Ping(context.Background()).Val() != "PONG" {
+			log.Panicf("ERROR | Server Redis not pong")
+		}
 	}
 
 	return &RedisClient{

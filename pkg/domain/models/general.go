@@ -24,6 +24,7 @@ const (
 	CredentialExchangeContextKey = "exchangecredential"
 	ActionGoogleKey              = "actiongoogle"
 	ActionNotionKey              = "actionnotion"
+	NotionHost                   = "notion.so/"
 )
 
 var ValidCommandTypes = map[string]bool{

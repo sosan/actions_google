@@ -12,6 +12,20 @@ import (
 	"actions_google/pkg/interfaces/controllers"
 )
 
+// InitDependencies initializes and returns a pointer to a Dependencies struct
+// containing all the necessary dependencies for the application.
+//
+// It sets up configurations for Zitadel, Kafka, and Clickhouse, and initializes
+// authentication context, services, and controllers. It also creates clients
+// for HTTP, Redis, and Kafka, and repositories for credentials and actions.
+//
+// The returned Dependencies struct includes:
+// - AuthService: a pointer to the authentication service
+// - AuthController: the authentication controller
+// - ActionsController: the actions controller
+//
+// Returns:
+// - *dimodel.Dependencies: a pointer to the initialized Dependencies struct
 func InitDependencies() *dimodel.Dependencies {
 	configZitadel := config.NewZitaldelEnvConfig()
 	kafkaConfig := config.NewKafkaEnvConfig()
@@ -31,7 +45,7 @@ func InitDependencies() *dimodel.Dependencies {
 	repoCredentialHTTP := httpclient.NewCredentialRepository(credentialHTTPClient, clickhouseConfig)
 	actionsRedisClient := redisclient.NewRedisClient()
 	actionsBrokerClient := brokerclient.NewBrokerClient(kafkaConfig)
-	notionRepo := notion.NewActionsClient()
+	notionRepo := transform.NewActionsClient()
 	repoActionsRedis := redisclient.NewActionsRepository(actionsRedisClient)
 	repoActionsBroker := brokerclient.NewActionsKafkaRepository(actionsBrokerClient)
 	actionsRepo := httpclient.NewActionsClientHTTP(actionsHTTPClient, clickhouseConfig)

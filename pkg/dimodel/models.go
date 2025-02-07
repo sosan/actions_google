@@ -6,11 +6,7 @@ import (
 )
 
 type Dependencies struct {
-	// WorkflowController   *controllers.WorkflowController
-	AuthService *repos.AuthService
-	// UserController       *controllers.UserController
-	// DashboardController  *controllers.DashboardController
-	AuthController *controllers.AuthController
-	// CredentialController *controllers.CredentialController
+	AuthService       *repos.AuthService
+	AuthController    *controllers.AuthController
 	ActionsController *controllers.ActionsController
 }

@@ -46,6 +46,7 @@ func (r *TokenRepository) GetToken() (*Token, error) {
 
 	data, err := r.redisClient.Get(r.key)
 	if err != nil {
+		log.Printf("ERROR | cannot connect to get token for user %s", r.key)
 		return nil, err
 	}
 	if data == "" { // Not exist key in redis

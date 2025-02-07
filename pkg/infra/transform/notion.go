@@ -1,18 +1,18 @@
-package notion
+package transform
 
 import (
 	"fmt"
 	"strings"
 )
 
-type TransformNotionRepo struct {
+type NotionRepo struct {
 }
 
-func NewActionsClient() *TransformNotionRepo {
-	return &TransformNotionRepo{}
+func NewActionsClient() *NotionRepo {
+	return &NotionRepo{}
 }
 
-func (n *TransformNotionRepo) ProcessNotionData(results *[]interface{}) (*[]string, *[][]string) {
+func (n *NotionRepo) ProcessNotionData(results *[]interface{}) (*[]string, *[][]string) {
 	headerMap := make(map[string]bool)
 	var headers []string
 	// unique headers
@@ -49,7 +49,7 @@ func (n *TransformNotionRepo) ProcessNotionData(results *[]interface{}) (*[]stri
 	return &headers, &csvData
 }
 
-func (n *TransformNotionRepo) extractPropertyValue(prop map[string]interface{}) string {
+func (n *NotionRepo) extractPropertyValue(prop map[string]interface{}) string {
 	propType, ok := prop["type"].(string)
 	if !ok {
 		return ""
